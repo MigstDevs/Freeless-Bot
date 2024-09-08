@@ -18,6 +18,8 @@ let guildPrefixes = new Map();
 let waitingForPrefix = false;
 
 let commandHistory = [];
+let freedoms = new Map(); // Store freedoms for each user
+let dailyCooldown = new Map(); // Track daily command cooldowns
 
 const token = process.env.token;
 const clientId = "911646421441187931";
@@ -120,6 +122,14 @@ client.on("ready", async () => {
       name: "ajuda",
       description: "Que raios esse bot oferece?",
     },
+    {
+      name: "freedoms",
+      description: "Veja quantas freedoms você tem.",
+    },
+    {
+      name: "daily",
+      description: "Colete seu bônus diário de freedoms.",
+    },
   ];
 
   try {
@@ -215,12 +225,6 @@ client.on("messageCreate", async (message) => {
           }, 15000);
         });
     }
-
-    if (message.content === guildPrefix + "freedoms") {
-      message.reply(
-        "Opa! Você, atualmente, possui <:freedoms:1282417743454273672>**0 freedoms!**<:freedoms:1282417743454273672>",
-      );
-    }
   }
 
   // Log executed commands
@@ -232,6 +236,37 @@ client.on("messageCreate", async (message) => {
     );
     if (commandHistory.length > 10000) {
       commandHistory.shift();
+    }
+  }
+
+  // Handle text commands for freedoms and daily
+  if (message.content.startsWith(guildPrefix + "freedoms")) {
+    const userId = message.author.id;
+    const userFreedoms = freedoms.get(userId) || 0;
+    message.reply(
+      `<@${userId}> você tem ${userFreedoms} freedoms!`,
+    );
+  }
+
+  if (message.content.startsWith(guildPrefix + "daily")) {
+    const userId = message.author.id;
+    const now = Date.now();
+
+    if (dailyCooldown.has(userId) && now - dailyCooldown.get(userId) < 86400000) {
+      const timeLeft = 86400000 - (now - dailyCooldown.get(userId));
+      const hoursLeft = Math.floor(timeLeft / 3600000);
+      const minutesLeft = Math.floor((timeLeft % 3600000) / 60000);
+      message.reply(
+        `<@${userId}>, você já coletou seu bônus diário! Tente novamente em ${hoursLeft} horas e ${minutesLeft} minutos.`,
+      );
+    } else {
+      const dailyFreedoms = Math.floor(Math.random() * (5000 - 1500 + 1)) + 1500;
+      const userFreedoms = freedoms.get(userId) || 0;
+      freedoms.set(userId, userFreedoms + dailyFreedoms);
+      dailyCooldown.set(userId, now);
+      message.reply(
+        `<@${userId}> você recebeu ${dailyFreedoms} freedoms! Agora você tem ${userFreedoms + dailyFreedoms} freedoms!`,
+      );
     }
   }
 });
@@ -298,6 +333,32 @@ client.on("interactionCreate", async (interaction) => {
         break;
       case "ajuda":
         comandoAjudaExecutar(interaction);
+        break;
+      case "freedoms":
+        const userId = interaction.user.id;
+        const userFreedoms = freedoms.get(userId) || 0;
+        await interaction.reply(
+          `<@${userId}> você tem ${userFreedoms} freedoms!`,
+        );
+        break;
+      case "daily":
+        const now = Date.now();
+        if (dailyCooldown.has(userId) && now - dailyCooldown.get(userId) < 86400000) {
+          const timeLeft = 86400000 - (now - dailyCooldown.get(userId));
+          const hoursLeft = Math.floor(timeLeft / 3600000);
+          const minutesLeft = Math.floor((timeLeft % 3600000) / 60000);
+          await interaction.reply(
+            `<@${userId}>, você já coletou seu bônus diário! Tente novamente em ${hoursLeft} horas e ${minutesLeft} minutos.`,
+          );
+        } else {
+          const dailyFreedoms = Math.floor(Math.random() * (5000 - 1500 + 1)) + 1500;
+          const userFreedoms = freedoms.get(userId) || 0;
+          freedoms.set(userId, userFreedoms + dailyFreedoms);
+          dailyCooldown.set(userId, now);
+          await interaction.reply(
+            `<@${userId}> você recebeu ${dailyFreedoms} freedoms! Agora você tem ${userFreedoms + dailyFreedoms} freedoms!`,
+          );
+        }
         break;
     }
   }
