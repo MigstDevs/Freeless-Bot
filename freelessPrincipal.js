@@ -187,15 +187,10 @@ client.on("messageCreate", async (message) => {
   }
 
   if (message.content.startsWith(guildPrefix + "freedoms")) {
-    const userId = message.mentions.users.first()
-      ? message.mentions.users.first().id
-      : message.author.id;
+    const userId = message.author.id;
 
     const userFreedoms = freedoms[userId] || 0;
-    const response =
-      userId === message.author.id
-        ? `Você tem ${userFreedoms} freedoms!`
-        : `<@${userId}> tem ${userFreedoms} freedoms!`;
+    const response = `Você tem ${userFreedoms} freedoms!`;
     message.reply(response);
   }
 
@@ -245,10 +240,7 @@ client.on("interactionCreate", async (interaction) => {
       const userId =
         options.getUser("user")?.id || interaction.user.id;
       const userFreedoms = freedoms[userId] || 0;
-      const response =
-        userId === interaction.user.id
-          ? `Você tem ${userFreedoms} freedoms!`
-          : `<@${userId}> tem ${userFreedoms} freedoms!`;
+      const response = `Você tem ${userFreedoms} freedoms!`;
       await interaction.reply(response);
       break;
 
