@@ -1,3 +1,11 @@
+import fs from "fs";
+let dailyCooldown = JSON.parse(fs.readFileSync(".data/dailyCooldown.json", "utf-8"));
+
+function saveData() {
+  fs.writeFileSync(".data/freedoms.json", JSON.stringify(freedoms, null, 2));
+  fs.writeFileSync(".data/dailyCooldown.json", JSON.stringify(dailyCooldown, null, 2));
+}
+
 async function comandoDailyExecutar (interaction, options) {
   const now = new Date().toLocaleDateString("pt-BR");
   const userDailyId = interaction.user.id;

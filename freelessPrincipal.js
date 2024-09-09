@@ -18,8 +18,8 @@ let guildPrefixes = new Map();
 let waitingForPrefix = false;
 
 let commandHistory = [];
-const freedomsFile = "./data/freedoms.json";
-const dailyCooldownFile = "./data/dailyCooldown.json";
+const freedomsFile = "./comandos/data/freedoms.json";
+const dailyCooldownFile = "./comandos/data/dailyCooldown.json";
 
 // Load data from JSON files
 let freedoms = JSON.parse(fs.readFileSync(freedomsFile, "utf-8"));
@@ -193,7 +193,7 @@ client.on("messageCreate", async (message) => {
     const userId = message.author.id;
 
     const userFreedoms = freedoms[userId] || 0;
-    const response = `💸 **|** Você possui <:freedoms:1282757761406468128> ${userFreedoms} <:freedoms:1282757761406468128>freedoms! A _liberdade_ está perto!`;
+    const response = `💸 **|** Você possui <:freedoms:1282757761406468128> ${userFreedoms} <:freedoms:1282757761406468128>freedoms! A _liberdade_ está perto! 🪙`;
     message.reply(response);
   }
 
@@ -211,7 +211,7 @@ client.on("messageCreate", async (message) => {
       saveData();
 
       message.reply(
-        `Você recebeu ${dailyFreedoms} freedoms! Agora você tem ${freedoms[userId]} freedoms!`,
+        `💸 **|** Você recebeu <:freedoms:1282757761406468128> ${dailyFreedoms} <:freedoms:1282757761406468128> freedoms! Agora você tem ${freedoms[userDailyId]} freedoms! 🥇`,
       );
     }
   }
