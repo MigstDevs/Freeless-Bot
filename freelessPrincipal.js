@@ -50,10 +50,6 @@ client.on("ready", async () => {
 
   const commands = [
     {
-      name: "ping",
-      description: "Calcula o ping de ambas nossas internets",
-    },
-    {
       name: "convite",
       description: "Obtêm o link de convite do bot.",
     },
@@ -124,7 +120,15 @@ client.on("ready", async () => {
     },
     {
       name: "freedoms",
-      description: "Veja quantas freedoms você tem.",
+      description: "Verifique a sua quantidade de freedoms.",
+      options: [
+        {
+          name: "user",
+          description: "Usuário para verificar a quantidade de freedoms.",
+          type: 6, // User mention type
+          required: false,
+        },
+      ],
     },
     {
       name: "daily",
@@ -241,23 +245,27 @@ client.on("messageCreate", async (message) => {
 
   // Handle text commands for freedoms and daily
   if (message.content.startsWith(guildPrefix + "freedoms")) {
-    const userId = message.author.id;
+    const mentionedUser = message.mentions.users.first();
+    const userId = mentionedUser ? mentionedUser.id : message.author.id;
     const userFreedoms = freedoms.get(userId) || 0;
-    message.reply(
-      `<@${userId}> você tem ${userFreedoms} freedoms!`,
-    );
+
+    if (mentionedUser) {
+      message.reply(`<@${userId}> tem ${userFreedoms} freedoms!`);
+    } else {
+      message.reply(`Você tem ${userFreedoms} freedoms!`);
+    }
   }
 
   if (message.content.startsWith(guildPrefix + "daily")) {
     const userId = message.author.id;
     const now = Date.now();
+    const lastDaily = dailyCooldown.get(userId);
+    const currentDate = new Date(now).getDate();
+    const lastDailyDate = lastDaily ? new Date(lastDaily).getDate() : -1;
 
-    if (dailyCooldown.has(userId) && now - dailyCooldown.get(userId) < 86400000) {
-      const timeLeft = 86400000 - (now - dailyCooldown.get(userId));
-      const hoursLeft = Math.floor(timeLeft / 3600000);
-      const minutesLeft = Math.floor((timeLeft % 3600000) / 60000);
+    if (lastDaily && currentDate === lastDailyDate) {
       message.reply(
-        `<@${userId}>, você já coletou seu bônus diário! Tente novamente em ${hoursLeft} horas e ${minutesLeft} minutos.`,
+        `<@${userId}>, você já coletou seu bônus diário hoje!`,
       );
     } else {
       const dailyFreedoms = Math.floor(Math.random() * (5000 - 1500 + 1)) + 1500;
@@ -272,94 +280,41 @@ client.on("messageCreate", async (message) => {
 });
 
 client.on("interactionCreate", async (interaction) => {
-  if (interaction.isStringSelectMenu()) {
-    const selectedOption = interaction.values[0];
+  if (!interaction.isCommand()) return;
 
-    if (selectedOption === "veri_ativi") {
-      const embed = {
-        color: 0x0099ff,
-        title: "Últimos Comandos 📒",
-        fields: [
-          {
-            name: "**Detalhes**",
-            value: commandHistory.join("\n\n"),
-          },
-        ],
-      };
-      if (interaction.user.id === "911000689365381130")
-        await interaction.reply({ embeds: [embed] });
-      else
-        await interaction.reply(
-          "Você não tem permissão para usar este comando.",
-        );
-    } else if (selectedOption === "reiniciar_bot") {
-      if (interaction.user.id === "911000689365381130") {
-        await interaction.reply("🔄️ ⛔ Reiniciando o Freeless...");
-        client.destroy();
-        console.log("Freeless Desligado.");
-        client.login(token);
-        console.log("Freeless Iniciado: Reinicialização Bem-Sucedida.");
-        await interaction.channel.send("👍 Reinicialização Bem-Sucedida!");
-      } else
-        await interaction.reply(
-          "Você não tem permissão para usar este comando.",
-        );
-    }
-  } else if (interaction.isCommand()) {
-    // Log executed slash commands
-    const { commandName, options } = interaction;
-    commandHistory.push(
-      `Slash Command - ${interaction.user.displayName} [${interaction.user.username}]: ${commandName} ${options ? JSON.stringify(options) : ""}`,
-    );
-    if (commandHistory.length > 10000) {
-      commandHistory.shift();
-    }
+  const { commandName, options } = interaction;
+    if (commandName === "convite") {
+    comandoConviteExecutar(interaction);
+  } else if (commandName === "tocar") {
+    comandoTocarExecutar(interaction);
+  } else if (commandName === "minecraft") {
+    comandoMinecraftExecutar(interaction);
+  } else if (commandName === "ajuda") {
+    comandoAjudaExecutar(interaction);
+  } else if (commandName === "freedoms") {
+    const user = options.getUser("user") || interaction.user;
+    const userId = user.id;
+    const userFreedoms = freedoms.get(userId) || 0;
+    await interaction.reply(`<@${userId}> tem ${userFreedoms} freedoms!`);
+  } else if (commandName === "daily") {
+    const userId = interaction.user.id;
+    const now = Date.now();
+    const lastDaily = dailyCooldown.get(userId);
+    const currentDate = new Date(now).getDate();
+    const lastDailyDate = lastDaily ? new Date(lastDaily).getDate() : -1;
 
-    switch (commandName) {
-      case "ping":
-        comandoPingExecutar(interaction);
-        break;
-      case "convite":
-        comandoConviteExecutar(interaction);
-        break;
-      case "mídia":
-        comandoMídiaExecutar(interaction, options);
-        break;
-      case "tocar":
-        comandoTocarExecutar(interaction, options);
-        break;
-      case "minecraft":
-        comandoMinecraftExecutar(interaction, options);
-        break;
-      case "ajuda":
-        comandoAjudaExecutar(interaction);
-        break;
-      case "freedoms":
-        const userId = interaction.user.id;
-        const userFreedoms = freedoms.get(userId) || 0;
-        await interaction.reply(
-          `<@${userId}> você tem ${userFreedoms} freedoms!`,
-        );
-        break;
-      case "daily":
-        const now = Date.now();
-        if (dailyCooldown.has(userId) && now - dailyCooldown.get(userId) < 86400000) {
-          const timeLeft = 86400000 - (now - dailyCooldown.get(userId));
-          const hoursLeft = Math.floor(timeLeft / 3600000);
-          const minutesLeft = Math.floor((timeLeft % 3600000) / 60000);
-          await interaction.reply(
-            `<@${userId}>, você já coletou seu bônus diário! Tente novamente em ${hoursLeft} horas e ${minutesLeft} minutos.`,
-          );
-        } else {
-          const dailyFreedoms = Math.floor(Math.random() * (5000 - 1500 + 1)) + 1500;
-          const userFreedoms = freedoms.get(userId) || 0;
-          freedoms.set(userId, userFreedoms + dailyFreedoms);
-          dailyCooldown.set(userId, now);
-          await interaction.reply(
-            `<@${userId}> você recebeu ${dailyFreedoms} freedoms! Agora você tem ${userFreedoms + dailyFreedoms} freedoms!`,
-          );
-        }
-        break;
+    if (lastDaily && currentDate === lastDailyDate) {
+      await interaction.reply(
+        `<@${userId}>, você já coletou seu bônus diário hoje!`,
+      );
+    } else {
+      const dailyFreedoms = Math.floor(Math.random() * (5000 - 1500 + 1)) + 1500;
+      const userFreedoms = freedoms.get(userId) || 0;
+      freedoms.set(userId, userFreedoms + dailyFreedoms);
+      dailyCooldown.set(userId, now);
+      await interaction.reply(
+        `<@${userId}> você recebeu ${dailyFreedoms} freedoms! Agora você tem ${userFreedoms + dailyFreedoms} freedoms!`,
+      );
     }
   }
 });
