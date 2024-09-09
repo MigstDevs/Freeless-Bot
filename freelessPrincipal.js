@@ -2,6 +2,8 @@
 import { comandoConviteExecutar } from "./comandos/convite.js";
 import { comandoMinecraftExecutar } from "./comandos/minecraft.js";
 import { comandoAjudaExecutar } from "./comandos/ajuda.js";
+import { comandoFreedomsExecutar } from "./comandos/freedoms.js";
+import { comandoTocarExecutar } from "./comandos/tocar.js"
 import fs from "fs";
 import { Client, GatewayIntentBits } from "discord.js";
 import { REST } from "@discordjs/rest";
@@ -190,7 +192,7 @@ client.on("messageCreate", async (message) => {
     const userId = message.author.id;
 
     const userFreedoms = freedoms[userId] || 0;
-    const response = `Você tem ${userFreedoms} freedoms!`;
+    const response = `💸 **|** Você possui <:freedoms:1282757761406468128> ${userFreedoms} <:freedoms:1282757761406468128>freedoms! A _liberdade_ está perto!`;
     message.reply(response);
   }
 
@@ -199,7 +201,7 @@ client.on("messageCreate", async (message) => {
     const now = new Date().toLocaleDateString("pt-BR");
 
     if (dailyCooldown[userId] === now) {
-      message.reply("Você já coletou seu bônus diário hoje!");
+      message.reply("❌ Você já coletou seu bônus diário hoje!");
     } else {
       const dailyFreedoms = Math.floor(Math.random() * (5000 - 1500 + 1)) + 1500;
       freedoms[userId] = (freedoms[userId] || 0) + dailyFreedoms;
@@ -237,30 +239,10 @@ client.on("interactionCreate", async (interaction) => {
       break;
 
     case "freedoms":
-      const userId =
-        options.getUser("user")?.id || interaction.user.id;
-      const userFreedoms = freedoms[userId] || 0;
-      const response = `Você tem ${userFreedoms} freedoms!`;
-      await interaction.reply(response);
+      comandoFreedomsExecutar(interaction, options);
       break;
-
     case "daily":
-      const now = new Date().toLocaleDateString("pt-BR");
-      const userDailyId = interaction.user.id;
-
-      if (dailyCooldown[userDailyId] === now) {
-        await interaction.reply("Você já coletou seu bônus diário hoje!");
-      } else {
-        const dailyFreedoms = Math.floor(Math.random() * (5000 - 1500 + 1)) + 1500;
-        freedoms[userDailyId] = (freedoms[userDailyId] || 0) + dailyFreedoms;
-        dailyCooldown[userDailyId] = now;
-
-        saveData();
-
-        await interaction.reply(
-          `Você recebeu ${dailyFreedoms} freedoms! Agora você tem ${freedoms[userDailyId]} freedoms!`,
-        );
-      }
+      comandoDailyExecutar(interaction)
       break;
   }
 });
