@@ -5,3 +5,5 @@ async function comandoFreedomsExecutar (interaction, options) {
   const response = `💸 **|** Você possui <:freedoms:1282757761406468128> ${userFreedoms} <:freedoms:1282757761406468128> freedoms! A _liberdade_ está perto!`;
   await interaction.reply(response);
 }
+
+export { comandoFreedomsExecutar };

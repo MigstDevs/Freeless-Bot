@@ -16,3 +16,5 @@ async function comandoDailyExecutar (interaction, options) {
     );
   }
 }
+
+export { comandoDailyExecutar };
