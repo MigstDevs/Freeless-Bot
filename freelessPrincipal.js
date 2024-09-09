@@ -3,7 +3,8 @@ import { comandoConviteExecutar } from "./comandos/convite.js";
 import { comandoMinecraftExecutar } from "./comandos/minecraft.js";
 import { comandoAjudaExecutar } from "./comandos/ajuda.js";
 import { comandoFreedomsExecutar } from "./comandos/freedoms.js";
-import { comandoTocarExecutar } from "./comandos/tocar.js"
+import { comandoTocarExecutar } from "./comandos/tocar.js";
+import { comandoDailyExecutar } from "./comandos/daily.js";
 import fs from "fs";
 import { Client, GatewayIntentBits } from "discord.js";
 import { REST } from "@discordjs/rest";
