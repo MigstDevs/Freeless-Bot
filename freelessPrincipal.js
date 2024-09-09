@@ -1,11 +1,8 @@
 // Imports de arquivo
-import { comandoTocarExecutar } from "./comandos/tocar.js";
-import { comandoPingExecutar } from "./comandos/ping.js";
 import { comandoConviteExecutar } from "./comandos/convite.js";
 import { comandoMinecraftExecutar } from "./comandos/minecraft.js";
 import { comandoAjudaExecutar } from "./comandos/ajuda.js";
-
-// Imports de bibliotecas ou pacotes
+import fs from "fs";
 import { Client, GatewayIntentBits } from "discord.js";
 import { REST } from "@discordjs/rest";
 import { Routes } from "discord-api-types/v9";
@@ -18,8 +15,12 @@ let guildPrefixes = new Map();
 let waitingForPrefix = false;
 
 let commandHistory = [];
-let freedoms = new Map(); // Store freedoms for each user
-let dailyCooldown = new Map(); // Track daily command cooldowns
+const freedomsFile = "./data/freedoms.json";
+const dailyCooldownFile = "./data/dailyCooldown.json";
+
+// Load data from JSON files
+let freedoms = JSON.parse(fs.readFileSync(freedomsFile, "utf-8"));
+let dailyCooldown = JSON.parse(fs.readFileSync(dailyCooldownFile, "utf-8"));
 
 const token = process.env.token;
 const clientId = "911646421441187931";
@@ -120,12 +121,12 @@ client.on("ready", async () => {
     },
     {
       name: "freedoms",
-      description: "Verifique a sua quantidade de freedoms.",
+      description: "Veja quantas freedoms você tem.",
       options: [
         {
           name: "user",
-          description: "Usuário para verificar a quantidade de freedoms.",
-          type: 6, // User mention type
+          description: "O usuário para verificar freedoms.",
+          type: 6,
           required: false,
         },
       ],
@@ -139,7 +140,7 @@ client.on("ready", async () => {
   try {
     console.log("Comecei a atualizar os comandos barra.");
 
-    rest.put(Routes.applicationCommands(clientId), {
+    await rest.put(Routes.applicationCommands(clientId), {
       body: commands,
     });
 
@@ -148,6 +149,12 @@ client.on("ready", async () => {
     console.error(error);
   }
 });
+
+// Save data to JSON files
+function saveData() {
+  fs.writeFileSync(freedomsFile, JSON.stringify(freedoms, null, 2));
+  fs.writeFileSync(dailyCooldownFile, JSON.stringify(dailyCooldown, null, 2));
+}
 
 client.on("messageCreate", async (message) => {
   if (waitingForPrefix) {
@@ -159,12 +166,6 @@ client.on("messageCreate", async (message) => {
     waitingForPrefix = false;
     message.reply(
       `O prefixo foi definido como "${message.content}" para este servidor.`,
-    );
-  }
-
-  if (message.content === "<@911646421441187931>") {
-    message.reply(
-      "Olá! Eu sou o Freeless, o bot que é seu escravo! 🫡 Para saber mais sobre mim, use </ajuda:1177690363629146222>",
     );
   }
 
@@ -185,95 +186,34 @@ client.on("messageCreate", async (message) => {
     waitingForPrefix = true;
   }
 
-  if (message.content === guildPrefix + "debug") {
-    if (message.author.id === "911000689365381130") {
-      const options = [
-        {
-          label: `Verificar atividade do bot`,
-          value: `veri_ativi`,
-        },
-        {
-          label: `Reiniciar o Bot`,
-          value: `reiniciar_bot`,
-        },
-      ];
-
-      message.reply({
-        content: "O que deseja depurar?",
-        components: [
-          {
-            type: 1,
-            components: [
-              {
-                type: 3,
-                custom_id: "debug_menu",
-                options,
-                placeholder: "(Comando ainda está em desenvolvimento)",
-              },
-            ],
-          },
-        ],
-      });
-    } else {
-      message
-        .reply(
-          "Quem você acha que é? Bom, o <@911000689365381130> não é! O <@911000689365381130> é o dono do Freeless, e este comando seria muito perigoso se acessável para todos! Espero que entenda!\n\nEsta mensagem será deletada em 15 segundos, fui! 😉",
-        )
-        .then((replyMessage) => {
-          setTimeout(() => {
-            replyMessage
-              .delete()
-              .catch((error) =>
-                console.error(`Error deleting message: ${error}`),
-              );
-          }, 15000);
-        });
-    }
-  }
-
-  // Log executed commands
-  if (message.content.startsWith(guildPrefix)) {
-    if (waitingForPrefix) return;
-
-    commandHistory.push(
-      `Message Command - ${message.author.displayName} [${message.author.username}]: ${message.content}`,
-    );
-    if (commandHistory.length > 10000) {
-      commandHistory.shift();
-    }
-  }
-
-  // Handle text commands for freedoms and daily
   if (message.content.startsWith(guildPrefix + "freedoms")) {
-    const mentionedUser = message.mentions.users.first();
-    const userId = mentionedUser ? mentionedUser.id : message.author.id;
-    const userFreedoms = freedoms.get(userId) || 0;
+    const userId = message.mentions.users.first()
+      ? message.mentions.users.first().id
+      : message.author.id;
 
-    if (mentionedUser) {
-      message.reply(`<@${userId}> tem ${userFreedoms} freedoms!`);
-    } else {
-      message.reply(`Você tem ${userFreedoms} freedoms!`);
-    }
+    const userFreedoms = freedoms[userId] || 0;
+    const response =
+      userId === message.author.id
+        ? `Você tem ${userFreedoms} freedoms!`
+        : `<@${userId}> tem ${userFreedoms} freedoms!`;
+    message.reply(response);
   }
 
   if (message.content.startsWith(guildPrefix + "daily")) {
     const userId = message.author.id;
-    const now = Date.now();
-    const lastDaily = dailyCooldown.get(userId);
-    const currentDate = new Date(now).getDate();
-    const lastDailyDate = lastDaily ? new Date(lastDaily).getDate() : -1;
+    const now = new Date().toLocaleDateString("pt-BR");
 
-    if (lastDaily && currentDate === lastDailyDate) {
-      message.reply(
-        `<@${userId}>, você já coletou seu bônus diário hoje!`,
-      );
+    if (dailyCooldown[userId] === now) {
+      message.reply("Você já coletou seu bônus diário hoje!");
     } else {
       const dailyFreedoms = Math.floor(Math.random() * (5000 - 1500 + 1)) + 1500;
-      const userFreedoms = freedoms.get(userId) || 0;
-      freedoms.set(userId, userFreedoms + dailyFreedoms);
-      dailyCooldown.set(userId, now);
+      freedoms[userId] = (freedoms[userId] || 0) + dailyFreedoms;
+      dailyCooldown[userId] = now;
+
+      saveData();
+
       message.reply(
-        `<@${userId}> você recebeu ${dailyFreedoms} freedoms! Agora você tem ${userFreedoms + dailyFreedoms} freedoms!`,
+        `Você recebeu ${dailyFreedoms} freedoms! Agora você tem ${freedoms[userId]} freedoms!`,
       );
     }
   }
@@ -283,39 +223,53 @@ client.on("interactionCreate", async (interaction) => {
   if (!interaction.isCommand()) return;
 
   const { commandName, options } = interaction;
-    if (commandName === "convite") {
-    comandoConviteExecutar(interaction);
-  } else if (commandName === "tocar") {
-    comandoTocarExecutar(interaction);
-  } else if (commandName === "minecraft") {
-    comandoMinecraftExecutar(interaction);
-  } else if (commandName === "ajuda") {
-    comandoAjudaExecutar(interaction);
-  } else if (commandName === "freedoms") {
-    const user = options.getUser("user") || interaction.user;
-    const userId = user.id;
-    const userFreedoms = freedoms.get(userId) || 0;
-    await interaction.reply(`<@${userId}> tem ${userFreedoms} freedoms!`);
-  } else if (commandName === "daily") {
-    const userId = interaction.user.id;
-    const now = Date.now();
-    const lastDaily = dailyCooldown.get(userId);
-    const currentDate = new Date(now).getDate();
-    const lastDailyDate = lastDaily ? new Date(lastDaily).getDate() : -1;
 
-    if (lastDaily && currentDate === lastDailyDate) {
-      await interaction.reply(
-        `<@${userId}>, você já coletou seu bônus diário hoje!`,
-      );
-    } else {
-      const dailyFreedoms = Math.floor(Math.random() * (5000 - 1500 + 1)) + 1500;
-      const userFreedoms = freedoms.get(userId) || 0;
-      freedoms.set(userId, userFreedoms + dailyFreedoms);
-      dailyCooldown.set(userId, now);
-      await interaction.reply(
-        `<@${userId}> você recebeu ${dailyFreedoms} freedoms! Agora você tem ${userFreedoms + dailyFreedoms} freedoms!`,
-      );
-    }
+  switch (commandName) {
+    case "convite":
+      comandoConviteExecutar(interaction);
+      break;
+
+    case "tocar":
+      comandoTocarExecutar(interaction, options);
+      break;
+
+    case "minecraft":
+      comandoMinecraftExecutar(interaction, options);
+      break;
+
+    case "ajuda":
+      comandoAjudaExecutar(interaction);
+      break;
+
+    case "freedoms":
+      const userId =
+        options.getUser("user")?.id || interaction.user.id;
+      const userFreedoms = freedoms[userId] || 0;
+      const response =
+        userId === interaction.user.id
+          ? `Você tem ${userFreedoms} freedoms!`
+          : `<@${userId}> tem ${userFreedoms} freedoms!`;
+      await interaction.reply(response);
+      break;
+
+    case "daily":
+      const now = new Date().toLocaleDateString("pt-BR");
+      const userDailyId = interaction.user.id;
+
+      if (dailyCooldown[userDailyId] === now) {
+        await interaction.reply("Você já coletou seu bônus diário hoje!");
+      } else {
+        const dailyFreedoms = Math.floor(Math.random() * (5000 - 1500 + 1)) + 1500;
+        freedoms[userDailyId] = (freedoms[userDailyId] || 0) + dailyFreedoms;
+        dailyCooldown[userDailyId] = now;
+
+        saveData();
+
+        await interaction.reply(
+          `Você recebeu ${dailyFreedoms} freedoms! Agora você tem ${freedoms[userDailyId]} freedoms!`,
+        );
+      }
+      break;
   }
 });
 
