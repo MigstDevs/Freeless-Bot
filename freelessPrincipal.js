@@ -18,8 +18,8 @@ let guildPrefixes = new Map();
 let waitingForPrefix = false;
 
 let commandHistory = [];
-const freedomsFile = "./comandos/data/freedoms.json";
-const dailyCooldownFile = "./comandos/data/dailyCooldown.json";
+const freedomsFile = "./data/freedoms.json";
+const dailyCooldownFile = "./data/dailyCooldown.json";
 
 // Load data from JSON files
 let freedoms = JSON.parse(fs.readFileSync(freedomsFile, "utf-8"));
