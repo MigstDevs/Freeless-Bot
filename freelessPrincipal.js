@@ -6,7 +6,7 @@ import { comandoFreedomsExecutar } from "./comandos/freedoms.js";
 import { comandoTocarExecutar } from "./comandos/tocar.js";
 import { comandoDailyExecutar } from "./comandos/daily.js";
 import fs from "fs";
-import { Client, GatewayIntentBits } from "discord.js";
+import { Client, GatewayIntentBits, ActivityType } from "discord.js";
 import { REST } from "@discordjs/rest";
 import { Routes } from "discord-api-types/v9";
 import express from "express";
@@ -48,8 +48,14 @@ const rest = new REST({ version: "10" }).setToken(token);
 
 client.on("ready", async () => {
   console.log(`O Freeless tá online como ${client.user.tag}`);
-  client.user.setActivity("falar de que você recebe ajuda ao executar /ajuda", {
-    type: "LISTENING",
+  client.user.setPresence({
+    activities: [
+      {
+        name: `falar de que você recebe ajuda ao executar /ajuda`,
+        type: ActivityType.Listening,
+      }
+    ],
+    status: 'online',
   });
 
   const commands = [
