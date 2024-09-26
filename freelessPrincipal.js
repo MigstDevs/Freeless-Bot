@@ -10,14 +10,14 @@ import { Client, GatewayIntentBits, ActivityType } from "discord.js";
 import { REST } from "@discordjs/rest";
 import { Routes } from "discord-api-types/v9";
 import express from "express";
+import dotenv from 'dotenv';
+dotenv.config();
 
 const app = express();
 
 let defaultPrefix = "fl!";
 let guildPrefixes = new Map();
 let waitingForPrefix = false;
-
-let commands = JSON.parse(fs.readFileSync('./data/commands.json', "utf-8"));
 
 let commandHistory = [];
 const freedomsFile = "./data/freedoms.json";
@@ -60,93 +60,7 @@ client.on("ready", async () => {
     status: 'online',
   });
 
-  const commands = [
-    {
-      name: "convite",
-      description: "Obtêm o link de convite do bot.",
-    },
-    {
-      name: "tocar",
-      description: "Toca uma música no canal de voz.",
-      options: [
-        {
-          name: "dados",
-          description: "A URL ou termo de pesquisa da música.",
-          type: 3,
-          required: true,
-        },
-        {
-          name: "plataforma",
-          description: "A plataforma da qual buscar a música.",
-          type: 3,
-          required: false,
-          choices: [
-            { name: "YouTube", value: "youtube" },
-            { name: "Deezer", value: "deezer" },
-            { name: "Spotify", value: "spotify" },
-          ],
-        },
-        {
-          name: "loop",
-          description: "Loop da música?",
-          type: 5,
-          required: false,
-        },
-      ],
-    },
-    {
-      name: "minecraft",
-      description: "Utilidades de minecraft!",
-      options: [
-        {
-          name: "status",
-          description: "Obtém informações básicas de um servidor Minecraft.",
-          type: 1,
-          options: [
-            {
-              name: "ip",
-              description: "O endereço IP do servidor Minecraft.",
-              type: 3,
-              required: true,
-            },
-          ],
-        },
-        {
-          name: "jogador",
-          description: "Obtêm dados básicos de um jogador de Minecraft",
-          type: 1,
-          options: [
-            {
-              name: "jogador",
-              description: "O jogador de qual deseja obter dados",
-              type: 3,
-              required: true,
-            },
-          ],
-        },
-      ],
-    },
-    {
-      name: "ajuda",
-      description: "Que raios esse bot oferece?",
-    },
-    {
-      name: "freedoms",
-      description: "Veja quantas freedoms você tem.",
-      options: [
-        {
-          name: "user",
-          description: "O usuário para verificar freedoms.",
-          type: 6,
-          required: false,
-        },
-      ],
-    },
-    {
-      name: "daily",
-      description: "Colete seu bônus diário de freedoms.",
-    },
-  ];
+  let commands = JSON.parse(fs.readFileSync('./data/commands.json', "utf-8"));
 
   try {
     console.log("Comecei a atualizar os comandos barra.");
@@ -219,7 +133,7 @@ client.on("messageCreate", async (message) => {
       saveData();
 
       message.reply(
-        `💸 **|** Você recebeu <:freedoms:1282757761406468128> ${dailyFreedoms} <:freedoms:1282757761406468128> freedoms! Agora você tem ${freedoms[userDailyId]} freedoms! 🥇`,
+        `💸 **|** Você recebeu <:freedoms:1282757761406468128> ${dailyFreedoms} <:freedoms:1282757761406468128> freedoms! Agora você tem ${freedoms} freedoms! 🥇`,
       );
     }
   }

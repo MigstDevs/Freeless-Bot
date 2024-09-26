@@ -1,9 +1,15 @@
 import fs from "fs";
-let dailyCooldown = JSON.parse(fs.readFileSync(".data/dailyCooldown.json", "utf-8"));
+import path from "path";
+
+const dailyCooldownFile = path.resolve('data', 'dailyCooldown.json');
+const freedomsFile = path.resolve('data', 'freedoms.json');
+
+let dailyCooldown = JSON.parse(fs.readFileSync(dailyCooldownFile, "utf-8"));
+let freedoms = JSON.parse(fs.readFileSync(freedomsFile, "utf-8"));
 
 function saveData() {
-  fs.writeFileSync(".data/freedoms.json", JSON.stringify(freedoms, null, 2));
-  fs.writeFileSync(".data/dailyCooldown.json", JSON.stringify(dailyCooldown, null, 2));
+  fs.writeFileSync(freedomsFile, JSON.stringify(freedoms, null, 2));
+  fs.writeFileSync(dailyCooldownFile, JSON.stringify(dailyCooldown, null, 2));
 }
 
 async function comandoDailyExecutar (interaction, options) {

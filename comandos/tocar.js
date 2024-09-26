@@ -1,16 +1,31 @@
 import { Client, GatewayIntentBits, EmbedBuilder } from 'discord.js';
 import { createAudioPlayer, createAudioResource, joinVoiceChannel, getVoiceConnection } from '@discordjs/voice';
-import ytdl from 'ytdl-core';
 import ytSearch from 'yt-search';
 import playDl from 'play-dl';
 import SpotifyWebApi from 'spotify-web-api-node';
 const { fetch } = playDl;
 
+const SpotifyWebApi = require('spotify-web-api-node');
+
 const spotifyApi = new SpotifyWebApi({
-  clientId: 'b71869a82e614ab2bac3c45d63128f7d',
-  clientSecret: '8f845f3a83f249278b671e1c23a8dfd9',
-  redirectUri: 'http://localhost:3000/callback',
+  clientId: process.env.spotifyId,
+  clientSecret: process.env.spotifySecret,
+  redirectUri: "http://localhost:3000/callback"
 });
+
+// Retrieve an access token
+spotifyApi.clientCredentialsGrant().then(
+  function (data) {
+    console.log('The access token expires in ' + data.body['expires_in']);
+    console.log('The access token is ' + data.body['access_token']);
+
+    // Save the access token for future use
+    spotifyApi.setAccessToken(data.body['access_token']);
+  },
+  function (err) {
+    console.log('Something went wrong when retrieving an access token', err);
+  }
+);
 
 const queue = new Map();
 
@@ -36,8 +51,9 @@ client.on('voiceStateUpdate', (oldState, newState) => {
  async function comandoTocarExecutar (interaction, options)  {
   console.log(options);
   const searchTerm = options.getString('dados');
-  const plataforma = options.getString('plataforma') || 'youtube'; 
-  const voiceChannel = interaction.member?.voice.channel;
+  const plataforma = options.getString('plataforma') || 'youtube';
+  const member = interaction.guild.members.cache.get(interaction.user.id) || interaction.member;
+  const voiceChannel = member?.voice.channel;
 
   if (!voiceChannel) {
     return interaction.reply({ content: '⛔ Você precisa estar em um canal de voz para usar esse comando!', ephemeral: true });
@@ -112,8 +128,8 @@ async function play(interaction, guild, song, options) {
 
   const connection = getVoiceConnection(guild.id);
 
-  const stream = ytdl(song.url, { filter: 'audioonly' });
-  const resource = createAudioResource(stream);
+  const stream = await playDl.stream(song.url);
+  const resource = createAudioResource(stream.stream, { inputType: stream.type });
 
   const player = createAudioPlayer();
   player.play(resource);
