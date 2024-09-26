@@ -11,6 +11,7 @@ import { REST } from "@discordjs/rest";
 import { Routes } from "discord-api-types/v9";
 import express from "express";
 import dotenv from 'dotenv';
+import { comandoPingExecutar } from "./comandos/ping.js";
 dotenv.config();
 
 const app = express();
@@ -143,10 +144,12 @@ client.on("interactionCreate", async (interaction) => {
   const { commandName, options } = interaction;
 
   switch (commandName) {
+    case "ping":
+      comandoPingExecutar(interaction);
+      break;
     case "convite":
       comandoConviteExecutar(interaction);
       break;
-
     case "tocar":
       comandoTocarExecutar(interaction, options);
       break;

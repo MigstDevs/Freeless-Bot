@@ -5,8 +5,6 @@ import playDl from 'play-dl';
 import SpotifyWebApi from 'spotify-web-api-node';
 const { fetch } = playDl;
 
-const SpotifyWebApi = require('spotify-web-api-node');
-
 const spotifyApi = new SpotifyWebApi({
   clientId: process.env.spotifyId,
   clientSecret: process.env.spotifySecret,

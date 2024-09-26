@@ -1,5 +1,9 @@
 [
     {
+      "name": "ping",
+      "description": "Verifica meu ping (minha latência)."
+    },
+    {
       "name": "convite",
       "description": "Obtêm o link de convite do bot."
     },
