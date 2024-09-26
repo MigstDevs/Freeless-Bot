@@ -87,5 +87,24 @@
     {
       "name": "daily",
       "description": "Colete seu bônus diário de freedoms."
+    },
+    {
+      "name": "anime",
+      "description": "Várias utilidades relacionadas a vários animes.",
+      "options": [
+        {
+          "name": "expansão",
+          "description": "Ataca alguém com uma expansão de domínio!",
+          "type": 1,
+          "options": [
+            {
+              "name": "alvo",
+              "description": "O usuário a qual atacar.",
+              "type": 6,
+              "required": "true"
+            }
+          ]
+        }
+      ]
     }
   ]  

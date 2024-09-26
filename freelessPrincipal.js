@@ -1,32 +1,31 @@
-// Imports de arquivo
+import fs from "fs";
+import { Client, GatewayIntentBits, ActivityType, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } from "discord.js";
+import { REST } from "@discordjs/rest";
+import { Routes } from "discord-api-types/v9";
+import express from "express";
+import dotenv from 'dotenv';
+import { comandoPingExecutar } from "./comandos/ping.js";
 import { comandoConviteExecutar } from "./comandos/convite.js";
 import { comandoMinecraftExecutar } from "./comandos/minecraft.js";
 import { comandoAjudaExecutar } from "./comandos/ajuda.js";
 import { comandoFreedomsExecutar } from "./comandos/freedoms.js";
 import { comandoTocarExecutar } from "./comandos/tocar.js";
 import { comandoDailyExecutar } from "./comandos/daily.js";
-import fs from "fs";
-import { Client, GatewayIntentBits, ActivityType } from "discord.js";
-import { REST } from "@discordjs/rest";
-import { Routes } from "discord-api-types/v9";
-import express from "express";
-import dotenv from 'dotenv';
-import { comandoPingExecutar } from "./comandos/ping.js";
+import { comandoAnimeExecutar } from "./comandos/anime.js"
+
 dotenv.config();
 
 const app = express();
-
-let defaultPrefix = "fl!";
-let guildPrefixes = new Map();
+const defaultPrefix = "fl!";
+const guildPrefixesFile = "./data/guildPrefixes.json";
 let waitingForPrefix = false;
 
-let commandHistory = [];
 const freedomsFile = "./data/freedoms.json";
 const dailyCooldownFile = "./data/dailyCooldown.json";
 
-// Load data from JSON files
 let freedoms = JSON.parse(fs.readFileSync(freedomsFile, "utf-8"));
 let dailyCooldown = JSON.parse(fs.readFileSync(dailyCooldownFile, "utf-8"));
+let guildPrefixes = JSON.parse(fs.readFileSync(guildPrefixesFile, "utf-8"));
 
 const token = process.env.token;
 const clientId = process.env.clientId;
@@ -76,10 +75,10 @@ client.on("ready", async () => {
   }
 });
 
-// Save data to JSON files
 function saveData() {
   fs.writeFileSync(freedomsFile, JSON.stringify(freedoms, null, 2));
   fs.writeFileSync(dailyCooldownFile, JSON.stringify(dailyCooldown, null, 2));
+  fs.writeFileSync(guildPrefixesFile, JSON.stringify(guildPrefixes, null, 2));
 }
 
 client.on("messageCreate", async (message) => {
@@ -87,27 +86,41 @@ client.on("messageCreate", async (message) => {
     if (message.author.bot) return;
 
     const guildId = message.guild.id;
-    guildPrefixes.set(guildId, message.content);
+    guildPrefixes[guildId] = message.content;
 
     waitingForPrefix = false;
     message.reply(
-      `O prefixo foi definido como "${message.content}" para este servidor.`,
+      `O prefixo foi definido como "${message.content}" para este servidor.`
     );
+    saveData();
   }
 
-  const guildPrefix = guildPrefixes.get(message.guild.id) || defaultPrefix;
+  const guildPrefix = guildPrefixes[message.guild.id] || defaultPrefix;
+
+  if (message.content === "-ticket end") {
+    const thread = message.channel;
+
+    if (thread.isThread() && thread.name.endsWith("-ticket")) {
+        await thread.delete('Ticket closed by the "-ticket end" command.');
+    } else {
+      message.reply("This command can only be used inside a ticket.");
+    }
+  }
 
   if (message.content === guildPrefix + "prefixo") {
-    const isOwner = message.member.id === message.guild.fetchOwner().id;
-    const hasManageGuildPermission =
-      message.member.permissions.has("ManageGuild");
+    const guildOwner = await message.guild.fetchOwner();
+    const isOwner = message.member.id === guildOwner.id;
 
-    if (!hasManageGuildPermission || !isOwner) {
+    const memberPermissions = message.member.permissions;
+    const hasManageGuildPermission = memberPermissions.has("ManageGuild");
+
+    if (!hasManageGuildPermission && !isOwner) {
       message.reply("❌ Você não tem permissão para usar este comando.");
       return;
     }
+
     message.reply(
-      `Atualmente, o prefixo do Freeless é "${guildPrefix}", e ele pode ser alterado para qualquer outro caractere! Envie uma mensagem com o novo prefixo e eu irei alterar o meu prefixo para ele.`,
+      `Atualmente, o prefixo do Freeless é "${guildPrefix}", e ele pode ser alterado para qualquer outro caractere! Envie uma mensagem com o novo prefixo e eu irei alterar o meu prefixo para ele.`
     );
     waitingForPrefix = true;
   }
@@ -134,14 +147,15 @@ client.on("messageCreate", async (message) => {
       saveData();
 
       message.reply(
-        `💸 **|** Você recebeu <:freedoms:1282757761406468128> ${dailyFreedoms} <:freedoms:1282757761406468128> freedoms! Agora você tem ${freedoms} freedoms! 🥇`,
+        `💸 **|** Você recebeu <:freedoms:1282757761406468128> ${dailyFreedoms} <:freedoms:1282757761406468128> freedoms! Agora você tem ${freedoms[userId]} freedoms! 🥇`
       );
     }
   }
 });
 
 client.on("interactionCreate", async (interaction) => {
-  const { commandName, options } = interaction;
+  if(interaction.isCommand()) {
+    const { commandName, options } = interaction;
 
   switch (commandName) {
     case "ping":
@@ -153,21 +167,52 @@ client.on("interactionCreate", async (interaction) => {
     case "tocar":
       comandoTocarExecutar(interaction, options);
       break;
-
     case "minecraft":
       comandoMinecraftExecutar(interaction, options);
       break;
-
     case "ajuda":
       comandoAjudaExecutar(interaction);
       break;
-
     case "freedoms":
       comandoFreedomsExecutar(interaction, options);
       break;
     case "daily":
-      comandoDailyExecutar(interaction)
+      comandoDailyExecutar(interaction);
       break;
+    case "anime":
+      comandoAnimeExecutar(interaction, options);
+      break;
+  }
+  } else if (interaction.isButton()) {
+    if (interaction.customId === "botServerCheck") {
+      await interaction.reply({ content: '💻 **|** Atualmente, o bot tá rodando no `Render`, website https://freeless-bot-discord-20xw.onrender.com e ID `srv-creuu2bv2p9s73d351b0`!', ephemeral: true})
+    } else if (interaction.customId === "stopPlsButton-expansion") {
+      const chance = Math.floor(Math.random() * 10)
+      if (chance <= 3) {
+        await interaction.reply(`🙇 **|** Você, <@${interaction.user.id}>, implora por piedade.`)
+        await interaction.followUp('👍 **|** Surpreendentemente, seu inimigo teve compaixão por você! Uau! Isso foi fácil...')
+      } else {
+        await interaction.reply(`🙇 **|** Você, <@${interaction.user.id}>, implora por piedade.`)
+        await interaction.followUp('❌ **|** Seu inimigo recusou! Uau! Ele nem liga pra tu...')
+        await interaction.followUp('😐 **|** Você tenta atacar seu inimigo! Não funcionou...')
+        await interaction.followUp('|| A interação acabou. ||')
+      }
+    } else if (interaction.customId === "ticketButtonOFFICIAL") {
+      const { user } = interaction;
+      const threadName = `${user.username}-ticket`;
+
+      const thread = await interaction.channel.threads.create({
+        name: threadName,
+        type: 12,
+        reason: `Ticket created by ${user.username}`,
+      });
+
+      await thread.members.add(user.id);
+
+      await thread.send(`Ticket opened! The ticket's opener is <@${user.id}>! If you want to close the ticket, just send "-ticket end"!\n-# <@&1289010136957845524>`,);
+
+      await interaction.reply({ content: `Ticket created successfully! It can be located at <#${thread.id}>.`, ephemeral: true})
+    }
   }
 });
 

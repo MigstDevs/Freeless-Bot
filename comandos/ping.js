@@ -1,11 +1,4 @@
-import { Client, GatewayIntentBits, EmbedBuilder } from 'discord.js';
-
-const client = new Client({
-  intents: [
-    GatewayIntentBits.Guilds,
-    GatewayIntentBits.GuildMessages,
-  ],
-});
+import { Client, GatewayIntentBits, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder } from 'discord.js';
 
 async function comandoPingExecutar(interaction) {
   await interaction.deferReply();
@@ -29,7 +22,15 @@ async function comandoPingExecutar(interaction) {
     },
   });
 
-  await interaction.editReply({embeds: [pingEmbed]});
+  const serverChecker = new ButtonBuilder()
+  .setLabel("Servidor do Bot")
+  .setEmoji("💻")
+  .setCustomId("botServerCheck")
+  .setStyle(ButtonStyle.Secondary)
+
+  const buttonDisplayer = new ActionRowBuilder().addComponents(serverChecker);
+
+  await interaction.editReply({embeds: [pingEmbed], components: [buttonDisplayer]});
 }
 
 export { comandoPingExecutar };
