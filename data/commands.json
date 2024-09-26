@@ -1,0 +1,87 @@
+[
+    {
+      "name": "convite",
+      "description": "Obtêm o link de convite do bot."
+    },
+    {
+      "name": "tocar",
+      "description": "Toca uma música no canal de voz.",
+      "options": [
+        {
+          "name": "dados",
+          "description": "A URL ou termo de pesquisa da música.",
+          "type": 3,
+          "required": true
+        },
+        {
+          "name": "plataforma",
+          "description": "A plataforma da qual buscar a música.",
+          "type": 3,
+          "required": false,
+          "choices": [
+            { "name": "YouTube", "value": "youtube" },
+            { "name": "Deezer", "value": "deezer" },
+            { "name": "Spotify", "value": "spotify" }
+          ]
+        },
+        {
+          "name": "loop",
+          "description": "Loop da música?",
+          "type": 5,
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "minecraft",
+      "description": "Utilidades de minecraft!",
+      "options": [
+        {
+          "name": "status",
+          "description": "Obtém informações básicas de um servidor Minecraft.",
+          "type": 1,
+          "options": [
+            {
+              "name": "ip",
+              "description": "O endereço IP do servidor Minecraft.",
+              "type": 3,
+              "required": true
+            }
+          ]
+        },
+        {
+          "name": "jogador",
+          "description": "Obtêm dados básicos de um jogador de Minecraft",
+          "type": 1,
+          "options": [
+            {
+              "name": "jogador",
+              "description": "O jogador de qual deseja obter dados",
+              "type": 3,
+              "required": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ajuda",
+      "description": "Que raios esse bot oferece?"
+    },
+    {
+      "name": "freedoms",
+      "description": "Veja quantas freedoms você tem.",
+      "options": [
+        {
+          "name": "user",
+          "description": "O usuário para verificar freedoms.",
+          "type": 6,
+          "required": false
+        }
+      ]
+    },
+    {
+      "name": "daily",
+      "description": "Colete seu bônus diário de freedoms."
+    }
+  ]  

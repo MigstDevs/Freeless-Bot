@@ -17,6 +17,8 @@ let defaultPrefix = "fl!";
 let guildPrefixes = new Map();
 let waitingForPrefix = false;
 
+let commands = JSON.parse(fs.readFileSync('./data/commands.json', "utf-8"));
+
 let commandHistory = [];
 const freedomsFile = "./data/freedoms.json";
 const dailyCooldownFile = "./data/dailyCooldown.json";
@@ -26,7 +28,7 @@ let freedoms = JSON.parse(fs.readFileSync(freedomsFile, "utf-8"));
 let dailyCooldown = JSON.parse(fs.readFileSync(dailyCooldownFile, "utf-8"));
 
 const token = process.env.token;
-const clientId = "911646421441187931";
+const clientId = process.env.clientId;
 
 const client = new Client({
   intents: [
@@ -224,8 +226,6 @@ client.on("messageCreate", async (message) => {
 });
 
 client.on("interactionCreate", async (interaction) => {
-  if (!interaction.isCommand()) return;
-
   const { commandName, options } = interaction;
 
   switch (commandName) {
