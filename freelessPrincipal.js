@@ -13,6 +13,7 @@ import { comandoTocarExecutar } from "./comandos/tocar.js";
 import { comandoDailyExecutar } from "./comandos/daily.js";
 import { comandoAnimeExecutar } from "./comandos/anime.js";
 import { comandoPensarExecutar } from "./comandos/pensar.js";
+import { comandoRemoverExecutar } from "./comandos/remover.js";
 
 dotenv.config();
 
@@ -186,6 +187,9 @@ client.on("interactionCreate", async (interaction) => {
     case "pensar":
       comandoPensarExecutar(interaction);
       break;
+    case "remover":
+      comandoRemoverExecutar(interaction, options);
+      break;
   }
   } else if (interaction.isButton()) {
     if (interaction.customId === "botServerCheck") {
@@ -193,13 +197,9 @@ client.on("interactionCreate", async (interaction) => {
     } else if (interaction.customId === "stopPlsButton-expansion") {
       const chance = Math.floor(Math.random() * 10)
       if (chance <= 3) {
-        await interaction.reply(`🙇 **|** Você, <@${interaction.user.id}>, implora por piedade.`)
-        await interaction.followUp('👍 **|** Surpreendentemente, seu inimigo teve compaixão por você! Uau! Isso foi fácil...')
+        await interaction.reply(`🙇 **|** Você, <@${interaction.user.id}>, implora por piedade.\n👍 **|** Surpreendentemente, seu inimigo teve compaixão por você! Uau! Isso foi fácil...`);
       } else {
-        await interaction.reply(`🙇 **|** Você, <@${interaction.user.id}>, implora por piedade.`)
-        await interaction.followUp('❌ **|** Seu inimigo recusou! Uau! Ele nem liga pra tu...')
-        await interaction.followUp('😐 **|** Você tenta atacar seu inimigo! Não funcionou...')
-        await interaction.followUp('|| A interação acabou. ||')
+        await interaction.reply(`🙇 **|** Você, <@${interaction.user.id}>, implora por piedade.\n❌ **|** Seu inimigo recusou! Uau! Ele nem liga pra tu...\n😐 **|** Você tenta atacar seu inimigo! Não funcionou...\n|| A interação acabou. ||`);
       }
     } else if (interaction.customId === "ticketButtonOFFICIAL") {
       const { user } = interaction;

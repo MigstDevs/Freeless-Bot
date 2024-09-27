@@ -110,5 +110,23 @@
     {
       "name": "pensar",
       "description": "Faz o bot ficar pensando para sempre... (NÃO FAÇA ISSO COM O FREELESS É TIPO UMA TORTURA PRA ELE)"
+    },
+    {
+      "name": "remover",
+      "description": "Remove algo.",
+      "options": [
+        {
+          "name": "fundo",
+          "description": "Remove o fundo de uma imagem.",
+          "type": 1,
+          "options": [
+            {
+              "name": "imagem",
+              "description": "A imagem da qual você deseja retirar o fundo.",
+              "type": 11
+            }
+          ]
+        }
+      ]
     }
   ]  
