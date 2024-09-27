@@ -1,4 +1,4 @@
-import { Client, GatewayIntentBits, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder } from 'discord.js';
+import { EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder } from 'discord.js';
 
 async function comandoPingExecutar(interaction) {
   await interaction.deferReply();
@@ -8,7 +8,11 @@ async function comandoPingExecutar(interaction) {
 
   const currentTimestamp = Date.now();
 
-  const ping = currentTimestamp - sentTimestamp;
+  let ping = currentTimestamp - sentTimestamp;
+
+  if (ping < 0) {
+    ping = ping * 2 + ping; 
+  }
 
   let pingEmbed = new EmbedBuilder({
     "title": `🏓Pong!`,

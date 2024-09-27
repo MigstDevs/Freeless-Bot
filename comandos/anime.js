@@ -38,7 +38,18 @@ async function comandoAnimeExecutar(interaction, options) {
 
         const expansionButtonDisplays = new ActionRowBuilder().addComponents(stopPlsButton, fightButton);
 
-        await interaction.editReply({ content: `|| <@${target.id}> ||`, embeds: [attackEmbed], components: [expansionButtonDisplays]});
+        if (target.id === interaction.user.id) {
+            attackEmbed.setDescription(`❓ **| <@${interaction.user.id}>... abriu uma expansão de domínio sozinho?**`);
+            attackEmbed.setFooter({ text: "Você está ciente de que ela não causa nenhum efeito em você mesmo, né?"});
+            attackEmbed.setImage(null);
+
+            await interaction.editReply({ content: `||<@${target.id}>||`, embeds: [attackEmbed]});
+        } else if (target.id === "911646421441187931"){
+            attackEmbed.setDescription(`😡 **| <@${interaction.user.id}> TENTOU ME ATACAR!!!**`);
+            attackEmbed.setFooter({ text: "Agora eu fiquei bravo..."});
+
+            await interaction.editReply({ content: `||<@${interaction.user.id}>||`, embeds: [attackEmbed]});
+        } else if (target.id != "911646421441187931" && target.id != interaction.user.id) await interaction.editReply({ content: `||<@${target.id}>||`, embeds: [attackEmbed], components: [expansionButtonDisplays]});
     }
 }
 export { comandoAnimeExecutar };

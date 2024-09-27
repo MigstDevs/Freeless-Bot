@@ -11,7 +11,8 @@ import { comandoAjudaExecutar } from "./comandos/ajuda.js";
 import { comandoFreedomsExecutar } from "./comandos/freedoms.js";
 import { comandoTocarExecutar } from "./comandos/tocar.js";
 import { comandoDailyExecutar } from "./comandos/daily.js";
-import { comandoAnimeExecutar } from "./comandos/anime.js"
+import { comandoAnimeExecutar } from "./comandos/anime.js";
+import { comandoPensarExecutar } from "./comandos/pensar.js";
 
 dotenv.config();
 
@@ -181,6 +182,9 @@ client.on("interactionCreate", async (interaction) => {
       break;
     case "anime":
       comandoAnimeExecutar(interaction, options);
+      break;
+    case "pensar":
+      comandoPensarExecutar(interaction);
       break;
   }
   } else if (interaction.isButton()) {

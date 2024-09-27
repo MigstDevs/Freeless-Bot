@@ -106,5 +106,9 @@
           ]
         }
       ]
+    },
+    {
+      "name": "pensar",
+      "description": "Faz o bot ficar pensando para sempre... (NÃO FAÇA ISSO COM O FREELESS É TIPO UMA TORTURA PRA ELE)"
     }
   ]  
