@@ -31,7 +31,12 @@ async function fightExpansion(interaction) {
     const actionRow = new ActionRowBuilder().addComponents(selectMenu);
 
     if (executerUser) {
-        await interaction.reply({ content: `🥊 **|** Eita! <@${interaction.user.id}> chamou <@${executerUser.id}> para lutar!`, components: [actionRow]});
+        if (executerUser.id === interaction.user.id) {
+            await interaction.reply({ content: `🤨 **|** O que você PENSA que está fazendo? Você não pode lutar com você mesmo!`});
+            return;
+        } else {
+            await interaction.reply({ content: `🥊 **|** Eita! <@${interaction.user.id}> chamou <@${executerUser.id}> para lutar!`, components: [actionRow]});
+        }
     } else {
         await interaction.reply({ content: "❌ **|** Não consegui encontrar o usuário que iniciou a expansão!", ephemeral: true});
     }

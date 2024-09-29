@@ -11,7 +11,6 @@ import { comandoConviteExecutar } from "./commands/convite.js";
 import { comandoMinecraftExecutar } from "./commands/minecraft.js";
 import { comandoAjudaExecutar } from "./commands/ajuda.js";
 import { comandoFreedomsExecutar } from "./commands/freedoms.js";
-import { comandoTocarExecutar } from "./commands/tocar.js";
 import { comandoDailyExecutar } from "./commands/daily.js";
 import { comandoAnimeExecutar } from "./commands/anime.js";
 import { comandoPensarExecutar } from "./commands/pensar.js";
@@ -25,11 +24,11 @@ dotenv.config();
 
 const app = express();
 const defaultPrefix = "fl!";
-const guildPrefixesFile = "./data/guildPrefixes.json";
+const guildPrefixesFile = "./data/prefixes/guildPrefixes.json";
 let waitingForPrefix = false;
 
-const freedomsFile = "./data/freedoms.json";
-const dailyCooldownFile = "./data/dailyCooldown.json";
+const freedomsFile = "./data/freedoms/freedoms.json";
+const dailyCooldownFile = "./data/freedoms/dailyCooldown.json";
 
 let freedoms = JSON.parse(fs.readFileSync(freedomsFile, "utf-8"));
 let dailyCooldown = JSON.parse(fs.readFileSync(dailyCooldownFile, "utf-8"));
@@ -68,7 +67,7 @@ client.on("ready", async () => {
     status: 'online',
   });
 
-  let commands = JSON.parse(fs.readFileSync('./data/commands.json', "utf-8"));
+  let commands = JSON.parse(fs.readFileSync('./data/interactions/commands.json', "utf-8"));
 
   try {
     console.log("Comecei a atualizar os comandos barra.");
@@ -171,9 +170,6 @@ client.on("interactionCreate", async (interaction) => {
       break;
     case "convite":
       comandoConviteExecutar(interaction);
-      break;
-    case "tocar":
-      comandoTocarExecutar(interaction, options);
       break;
     case "minecraft":
       comandoMinecraftExecutar(interaction, options);

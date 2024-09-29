@@ -93,7 +93,7 @@
       "description": "Várias utilidades relacionadas a vários animes.",
       "options": [
         {
-          "name": "expansão",
+          "name": "jjk-expansão",
           "description": "Ataca alguém com uma expansão de domínio!",
           "type": 1,
           "options": [

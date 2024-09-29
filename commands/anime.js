@@ -1,10 +1,27 @@
-let commandExecuters = {};
-import { EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder } from "discord.js";
+import fs from 'fs';
+import path from 'path';
+import { EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder } from 'discord.js';
+
+const commandExecutersFile = path.resolve('data', 'anime', 'commandExecuters.json');
+
+function loadCommandExecuters() {
+    if (fs.existsSync(commandExecutersFile)) {
+        const data = fs.readFileSync(commandExecutersFile, 'utf-8');
+        return JSON.parse(data);
+    }
+    return {};
+}
+
+function saveCommandExecuters(commandExecuters) {
+    fs.writeFileSync(commandExecutersFile, JSON.stringify(commandExecuters, null, 2));
+}
+
+let commandExecuters = loadCommandExecuters();
 
 async function comandoAnimeExecutar(interaction, options) {
     const subcommand = options.getSubcommand();
 
-    if (subcommand === "expansão") {
+    if (subcommand === "jjk-expansão") {
         await interaction.deferReply();
 
         const randomMsg = Math.floor(Math.random() * 5);
@@ -13,6 +30,7 @@ async function comandoAnimeExecutar(interaction, options) {
 
         const executerUser = interaction.user;
         commandExecuters[interaction.id] = executerUser;
+        saveCommandExecuters(commandExecuters); // Save to file
 
         if (randomMsg === 0) gifAtk = "https://i.pinimg.com/originals/83/85/46/838546ec7d2352266b860764d8b5ece0.gif";
         if (randomMsg === 1) gifAtk = "https://i.pinimg.com/originals/14/fc/7d/14fc7d1120735dd8e2064a38913ea339.gif";
@@ -60,7 +78,7 @@ async function comandoAnimeExecutar(interaction, options) {
 }
 
 async function getExecuter() {
-    return commandExecuters;
+    return loadCommandExecuters();
 }
 
 export { comandoAnimeExecutar, getExecuter };
