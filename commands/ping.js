@@ -11,7 +11,7 @@ async function comandoPingExecutar(interaction) {
   let ping = currentTimestamp - sentTimestamp;
 
   if (ping < 0) {
-    ping = ping * 2 + ping; 
+    ping = ping * 3; 
   }
 
   let pingEmbed = new EmbedBuilder({

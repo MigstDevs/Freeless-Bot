@@ -4,16 +4,22 @@ import { REST } from "@discordjs/rest";
 import { Routes } from "discord-api-types/v9";
 import express from "express";
 import dotenv from 'dotenv';
-import { comandoPingExecutar } from "./comandos/ping.js";
-import { comandoConviteExecutar } from "./comandos/convite.js";
-import { comandoMinecraftExecutar } from "./comandos/minecraft.js";
-import { comandoAjudaExecutar } from "./comandos/ajuda.js";
-import { comandoFreedomsExecutar } from "./comandos/freedoms.js";
-import { comandoTocarExecutar } from "./comandos/tocar.js";
-import { comandoDailyExecutar } from "./comandos/daily.js";
-import { comandoAnimeExecutar } from "./comandos/anime.js";
-import { comandoPensarExecutar } from "./comandos/pensar.js";
-import { comandoRemoverExecutar } from "./comandos/remover.js";
+
+
+import { comandoPingExecutar } from "./commands/ping.js";
+import { comandoConviteExecutar } from "./commands/convite.js";
+import { comandoMinecraftExecutar } from "./commands/minecraft.js";
+import { comandoAjudaExecutar } from "./commands/ajuda.js";
+import { comandoFreedomsExecutar } from "./commands/freedoms.js";
+import { comandoTocarExecutar } from "./commands/tocar.js";
+import { comandoDailyExecutar } from "./commands/daily.js";
+import { comandoAnimeExecutar } from "./commands/anime.js";
+import { comandoPensarExecutar } from "./commands/pensar.js";
+import { comandoRemoverExecutar } from "./commands/remover.js";
+
+
+import { stopRequestExpansion } from "./buttons/anime-StopPlsButton.js";
+import { fightExpansion } from "./buttons/anime-fightButton.js";
 
 dotenv.config();
 
@@ -195,12 +201,7 @@ client.on("interactionCreate", async (interaction) => {
     if (interaction.customId === "botServerCheck") {
       await interaction.reply({ content: '💻 **|** Atualmente, o bot tá rodando no `Render`, website https://freeless-bot-discord-20xw.onrender.com e ID `srv-creuu2bv2p9s73d351b0`!', ephemeral: true})
     } else if (interaction.customId === "stopPlsButton-expansion") {
-      const chance = Math.floor(Math.random() * 10)
-      if (chance <= 3) {
-        await interaction.reply(`🙇 **|** Você, <@${interaction.user.id}>, implora por piedade.\n👍 **|** Surpreendentemente, seu inimigo teve compaixão por você! Uau! Isso foi fácil...`);
-      } else {
-        await interaction.reply(`🙇 **|** Você, <@${interaction.user.id}>, implora por piedade.\n❌ **|** Seu inimigo recusou! Uau! Ele nem liga pra tu...\n😐 **|** Você tenta atacar seu inimigo! Não funcionou...\n|| A interação acabou. ||`);
-      }
+      stopRequestExpansion(interaction);
     } else if (interaction.customId === "ticketButtonOFFICIAL") {
       const { user } = interaction;
       const threadName = `${user.username}-ticket`;
@@ -216,6 +217,8 @@ client.on("interactionCreate", async (interaction) => {
       await thread.send(`Ticket opened! The ticket's opener is <@${user.id}>! If you want to close the ticket, just send "-ticket end"!\n-# <@&1289010136957845524>`,);
 
       await interaction.reply({ content: `Ticket created successfully! It can be located at <#${thread.id}>.`, ephemeral: true})
+    } else if (interaction.customId.startsWith("fightButton-expansion-")) {
+      fightExpansion(interaction);
     }
   }
 });
