@@ -167,8 +167,8 @@ async function endPoll(interaction, votes, yesTextButton, noTextButton, yesEmoji
 
     const disabledActionRow = new ActionRowBuilder()
         .addComponents(
-            new ButtonBuilder().setCustomId(`buttonAgree-poll-${interaction.id}`).setDisabled(true).setLabel(yesTextButton).setEmoji(yesEmojiButton),
-            new ButtonBuilder().setCustomId(`buttonDisagree-poll-${interaction.id}`).setDisabled(true).setLabel(noTextButton).setEmoji(noEmojiButton)
+            new ButtonBuilder().setCustomId(`buttonAgree-poll-${interaction.id}`).setDisabled(true).setLabel(yesTextButton).setEmoji(yesEmojiButton).setStyle(ButtonStyle.Success),
+            new ButtonBuilder().setCustomId(`buttonDisagree-poll-${interaction.id}`).setDisabled(true).setLabel(noTextButton).setEmoji(noEmojiButton).setStyle(ButtonStyle.Danger)
         );
 
     let resultEmbed = new EmbedBuilder()
