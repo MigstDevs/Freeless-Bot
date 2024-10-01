@@ -15,6 +15,7 @@ import { comandoDailyExecutar } from "./commands/daily.js";
 import { comandoAnimeExecutar } from "./commands/anime.js";
 import { comandoPensarExecutar } from "./commands/pensar.js";
 import { comandoRemoverExecutar } from "./commands/remover.js";
+import { comandoGerarExecutar } from "./commands/gerar.js";
 
 
 import { stopRequestExpansion } from "./buttons/anime-StopPlsButton.js";
@@ -191,6 +192,9 @@ client.on("interactionCreate", async (interaction) => {
       break;
     case "remover":
       comandoRemoverExecutar(interaction, options);
+      break;
+    case "gerar":
+      comandoGerarExecutar(interaction, options);
       break;
   }
   } else if (interaction.isButton()) {

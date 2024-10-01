@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder } from 'discord.js';
 
-const commandExecutersFile = path.resolve('data', 'anime', 'commandExecuters.json');
+const commandExecutersFile = path.resolve('data', 'interactions', 'anime', 'commandExecuters.json');
 
 function loadCommandExecuters() {
     if (fs.existsSync(commandExecutersFile)) {

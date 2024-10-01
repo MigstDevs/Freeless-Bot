@@ -8,35 +8,6 @@
       "description": "Obtêm o link de convite do bot."
     },
     {
-      "name": "tocar",
-      "description": "Toca uma música no canal de voz.",
-      "options": [
-        {
-          "name": "dados",
-          "description": "A URL ou termo de pesquisa da música.",
-          "type": 3,
-          "required": true
-        },
-        {
-          "name": "plataforma",
-          "description": "A plataforma da qual buscar a música.",
-          "type": 3,
-          "required": false,
-          "choices": [
-            { "name": "YouTube", "value": "youtube" },
-            { "name": "Deezer", "value": "deezer" },
-            { "name": "Spotify", "value": "spotify" }
-          ]
-        },
-        {
-          "name": "loop",
-          "description": "Loop da música?",
-          "type": 5,
-          "required": false
-        }
-      ]
-    },
-    {
       "name": "minecraft",
       "description": "Utilidades de minecraft!",
       "options": [
@@ -124,6 +95,67 @@
               "name": "imagem",
               "description": "A imagem da qual você deseja retirar o fundo.",
               "type": 11
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "gerar",
+      "description": "Gera alguma coisa (uau, não me diga)!",
+      "options": [
+        {
+          "name": "enquete",
+          "description": "Gera uma enquete onde pessoas podem votar para expressar a opinião delas sobre um assunto.",
+          "type": 1,
+          "options": [
+            {
+              "name": "título",
+              "description": "O título (o tópico) da enquete.",
+              "type": 3,
+              "required": true
+            },
+            {
+              "name": "botão_sim_texto",
+              "description": "O texto que vai aparecer no botão de concordar com a enquete.",
+              "type": 3,
+              "required": true
+            },
+            {
+              "name": "botão_não_texto",
+              "description": "O texto que vai aparecer no botão de discordar com a enquete.",
+              "type": 3,
+              "required": true
+            },
+            {
+              "name": "botão_sim_emoji",
+              "description": "O emoji que vai aparecer no botão de concordar com a enquete.",
+              "type": 3,
+              "required": true
+            },
+            {
+              "name": "botão_não_emoji",
+              "description": "O emoji que vai aparecer no botão de discordar com a enquete.",
+              "type": 3,
+              "required": true
+            },
+            {
+              "name": "duração",
+              "description": "A duração da enquete (1m, 1h ou 1d, por exemplo).",
+              "type": 3,
+              "required": true
+            },
+            {
+              "name": "descrição",
+              "description": "A descrição da enquete, se necessário.",
+              "type": 3,
+              "required": false
+            },
+            {
+              "name": "imagem",
+              "description": "Se você quiser, coloque uma imagem na enquete.",
+              "type": 11,
+              "required": false
             }
           ]
         }
