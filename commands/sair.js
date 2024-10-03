@@ -2,7 +2,7 @@ async function comandoSairExecutar(interaction) {
     const user = interaction.user;
     const member = interaction.guild.members.cache.get(user.id); 
     const owner = await interaction.guild.fetchOwner();
-    const botMember = interaction.guild.members.cache.get(interaction.client.user.id); 
+    const botMember = interaction.guild.members.me; 
 
     await interaction.deferReply();
 
@@ -10,7 +10,7 @@ async function comandoSairExecutar(interaction) {
         return await interaction.editReply(`🫤 **|** Cara... O que cê tá pensando?\n👑 **|** Você, <@${owner.id}>, é o **DONO** deste servidor. Donos do próprio servidor não podem ~~ser expulsos~~ sair do servidor!`);
     }
 
-    if (!interaction.guild.me.permissions.has('KICK_MEMBERS')) {
+    if (!botMember.permissions.has('KICK_MEMBERS')) {
         return await interaction.editReply(`🚫 **|** Eu não tenho permissão para te tirar deste servidor!`);
     }
 
