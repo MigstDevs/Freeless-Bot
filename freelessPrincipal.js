@@ -46,7 +46,7 @@ const client = new Client({
   ],
 });
 
-app.listen(2805, () => {
+app.listen(3000, () => {
   console.log("O Bot Sem Liberdade foi Preso! Inicialização bem-sucedida");
 });
 
