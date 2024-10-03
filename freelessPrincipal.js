@@ -46,7 +46,7 @@ const client = new Client({
   ],
 });
 
-app.listen(3000, () => {
+app.listen(2805, () => {
   console.log("O Bot Sem Liberdade foi Preso! Inicialização bem-sucedida");
 });
 
@@ -220,7 +220,16 @@ client.on("interactionCreate", async (interaction) => {
     } else if (interaction.customId.startsWith("fightButton-expansion-")) {
       fightExpansion(interaction);
     }
-  }
+  } else if (interaction.isMessageContextMenuCommand()) {
+    const { commandName, targetMessage } = interaction;
+  
+    if (commandName === "Obter Informações") {
+      await interaction.reply({
+        content: `Conteúdo da mensagem: ${targetMessage.content}\nAutor: <@${targetMessage.author.id}>`,
+        ephemeral: true
+      });
+    }
+  }  
 });
 
 client.login(token);

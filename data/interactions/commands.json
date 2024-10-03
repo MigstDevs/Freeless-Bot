@@ -160,5 +160,9 @@
           ]
         }
       ]
+    },
+    {
+      "name": "Obter Informações",
+      "type": 3
     }
   ]  

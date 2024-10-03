@@ -93,38 +93,38 @@ async function comandoGerarExecutar(interaction, options) {
             time: durationInSeconds * 1000
         });
 
-        collector.on('collect', i => {
+        collector.on('collect', async i => {
             const userId = i.user.id;
             const pollData = loadPollData()[interaction.id];
             const previousVote = pollData.voters[userId];
 
             if (i.customId === `buttonAgree-poll-${interaction.id}`) {
                 if (previousVote === 'agree') {
-                    i.reply({ content: `Você já votou em **${yesTextButton}**!`, ephemeral: true });
+                    await i.reply({ content: `Você já votou em **${yesTextButton}**!`, ephemeral: true });
                     return;
                 } else if (previousVote === 'disagree') {
                     pollData.votes.disagree -= 1;
                     pollData.votes.agree += 1;
                     pollData.voters[userId] = 'agree';
-                    i.reply({ content: `Você mudou seu voto para **${yesTextButton}**!`, ephemeral: true });
+                    await i.reply({ content: `Você mudou seu voto para **${yesTextButton}**!`, ephemeral: true });
                 } else {
                     pollData.votes.agree += 1;
                     pollData.voters[userId] = 'agree';
-                    i.reply({ content: `Você votou em **${yesTextButton}**!`, ephemeral: true });
+                    await i.reply({ content: `Você votou em **${yesTextButton}**!`, ephemeral: true });
                 }
             } else if (i.customId === `buttonDisagree-poll-${interaction.id}`) {
                 if (previousVote === 'disagree') {
-                    i.reply({ content: `Você já votou em **${noTextButton}**!`, ephemeral: true });
+                    await i.reply({ content: `Você já votou em **${noTextButton}**!`, ephemeral: true });
                     return;
                 } else if (previousVote === 'agree') {
                     pollData.votes.agree -= 1;
                     pollData.votes.disagree += 1;
                     pollData.voters[userId] = 'disagree';
-                    i.reply({ content: `Você mudou seu voto para **${noTextButton}**!`, ephemeral: true });
+                    await i.reply({ content: `Você mudou seu voto para **${noTextButton}**!`, ephemeral: true });
                 } else {
                     pollData.votes.disagree += 1;
                     pollData.voters[userId] = 'disagree';
-                    i.reply({ content: `Você votou em **${noTextButton}**!`, ephemeral: true });
+                    await i.reply({ content: `Você votou em **${noTextButton}**!`, ephemeral: true });
                 }
             }
 
@@ -132,7 +132,7 @@ async function comandoGerarExecutar(interaction, options) {
         });
 
         collector.on('end', async () => {
-            endPoll(interaction, pollData.votes, yesTextButton, noTextButton, yesEmojiButton, noEmojiButton, topicPoll);
+            endPoll(interaction, pollData.votes, yesTextButton, noTextButton, yesEmojiButton, noEmojiButton, topicPoll, imageUrl);
             deletePollData(interaction.id);
         });
     }
@@ -159,7 +159,7 @@ function deletePollData(interactionId) {
     fs.writeFileSync(POLL_DATA_PATH, JSON.stringify(pollStore, null, 2));
 }
 
-async function endPoll(interaction, votes, yesTextButton, noTextButton, yesEmojiButton, noEmojiButton, topicPoll) {
+async function endPoll(interaction, votes, yesTextButton, noTextButton, yesEmojiButton, noEmojiButton, topicPoll, imageUrl) {
     const pollData = loadPollData()[interaction.id];
     if (!pollData) return;
 
@@ -175,6 +175,10 @@ async function endPoll(interaction, votes, yesTextButton, noTextButton, yesEmoji
         .setTitle(`Resultado da enquete: ${topicPoll}, ${yesTextButton} vs ${noTextButton}`)
         .setColor(0x8B0000)
         .setDescription(`**${yesTextButton}**: ${votes.agree} votos\n**${noTextButton}**: ${votes.disagree} votos`);
+
+        if (imageUrl) {
+            resultEmbed.setImage(imageUrl);
+        }
 
     if (votes.agree > votes.disagree) {
         resultEmbed.setFooter({ text: `Vencedor: ${yesTextButton}` });
