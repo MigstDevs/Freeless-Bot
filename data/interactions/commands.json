@@ -162,7 +162,7 @@
       ]
     },
     {
-      "name": "Obter Informações",
-      "type": 3
+      "name": "sair",
+      "description": "Use esse comando pra sair desse servidor! (Tá com preguiça de clicar com botão direito, filho?)"
     }
   ]  

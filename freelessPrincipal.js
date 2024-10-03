@@ -16,6 +16,7 @@ import { comandoAnimeExecutar } from "./commands/anime.js";
 import { comandoPensarExecutar } from "./commands/pensar.js";
 import { comandoRemoverExecutar } from "./commands/remover.js";
 import { comandoGerarExecutar } from "./commands/gerar.js";
+import { comandoSairExecutar } from "./commands/sair.js";
 
 
 import { stopRequestExpansion } from "./buttons/anime-StopPlsButton.js";
@@ -195,6 +196,9 @@ client.on("interactionCreate", async (interaction) => {
       break;
     case "gerar":
       comandoGerarExecutar(interaction, options);
+      break;
+    case "sair":
+      comandoSairExecutar(interaction);
       break;
   }
   } else if (interaction.isButton()) {
