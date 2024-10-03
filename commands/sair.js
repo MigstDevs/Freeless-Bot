@@ -11,11 +11,11 @@ async function comandoSairExecutar(interaction) {
     }
 
     if (!interaction.guild.me.permissions.has('KICK_MEMBERS')) {
-        return await interaction.editReply(`🚫 **|** Eu não tenho permissão para expulsar membros neste servidor.`);
+        return await interaction.editReply(`🚫 **|** Eu não tenho permissão para te tirar deste servidor!`);
     }
 
     if (botMember.roles.highest.position <= member.roles.highest.position) {
-        return await interaction.editReply(`😬 **|** Eu não posso expulsar <@${user.id}> porque meu cargo é menor ou igual ao dele na hierarquia de cargos!`);
+        return await interaction.editReply(`😬 **|** Eu não posso ~~expulsar~~ remover você, <@${user.id}>, porque meu cargo é menor ou igual ao seu na hierarquia de cargos!`);
     }
 
     await interaction.editReply(`💔 **|** Woosh! E lá se vai ele...\n😭 **|** <@${user.id}> saiu do servidor!`);
