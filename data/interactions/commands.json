@@ -158,6 +158,18 @@
               "required": false
             }
           ]
+        },
+        {
+          "name": "dados",
+          "description": "Gera dados de algum usuário.",
+          "type": 1,
+          "options": [
+            {
+              "name": "usuário",
+              "description": "Gera dados de algum usuário.",
+              "type": 1
+            }
+          ]
         }
       ]
     },
