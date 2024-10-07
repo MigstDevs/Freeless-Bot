@@ -17,7 +17,8 @@ import { comandoPensarExecutar } from "./commands/pensar.js";
 import { comandoRemoverExecutar } from "./commands/remover.js";
 import { comandoGerarExecutar } from "./commands/gerar.js";
 import { comandoSairExecutar } from "./commands/sair.js";
-
+import { comandoInfernoExecutar } from "./commands/inferno.js";
+import { comandoNukeExecutar } from "./commands/nuke.js";
 
 import { stopRequestExpansion } from "./buttons/anime-StopPlsButton.js";
 import { fightExpansion } from "./buttons/anime-fightButton.js";
@@ -111,6 +112,12 @@ client.on("interactionCreate", async (interaction) => {
       break;
     case "sair":
       comandoSairExecutar(interaction);
+      break;
+    case "inferno":
+      comandoInfernoExecutar(interaction, options);
+      break;
+    case "nuke":
+      comandoNukeExecutar(interaction, options);
       break;
   }
   } else if (interaction.isButton()) {

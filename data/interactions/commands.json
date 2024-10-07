@@ -160,14 +160,15 @@
           ]
         },
         {
-          "name": "dados",
+          "name": "dados-usuário",
           "description": "Gera dados de algum usuário.",
           "type": 1,
           "options": [
             {
               "name": "usuário",
-              "description": "Gera dados de algum usuário.",
-              "type": 1
+              "description": "O usuário a qual analisar.",
+              "type": 6,
+              "required": true
             }
           ]
         }
@@ -176,5 +177,40 @@
     {
       "name": "sair",
       "description": "Use esse comando pra sair desse servidor! (Tá com preguiça de clicar com botão direito, filho?)"
+    },
+    {
+      "name": "inferno",
+      "description": "Um inferno de...",
+      "options": [
+        {
+          "name": "spam",
+          "description": "Crie um inferno de spam! MUAHAHA",
+          "type": 1,
+          "options": [
+            {
+              "name": "mensagem",
+              "description": "A mensagem que eu devo spammar.",
+              "type": 3,
+              "required": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "nuke",
+      "description": "Nuka o planeta (zueira, nuka algo - esquece pode nukar o mundo com isso aqui sim)",
+      "options": [
+        {
+          "name": "local",
+          "description": "Deleta todas as mensagens desse canal.",
+          "type": 1
+        },
+        {
+          "name": "global",
+          "description": "Deleta todas as categorias e todos os canais deste servidor.",
+          "type": 1
+        }
+      ]
     }
   ]  

@@ -4,11 +4,31 @@ import path from 'path';
 
 const POLL_DATA_PATH = path.resolve('data', 'interactions', 'polls', 'pollData.json');
 
+const badgeTranslations = {
+    "HypeSquadOnlineHouse1": "Hypesquad Bravery",
+    "HypeSquadOnlineHouse2": "Hypesquad Brilliance",
+    "HypeSquadOnlineHouse3": "Hypesquad Balance",
+    "ActiveDeveloper": "Desenvolvedor Ativo",
+    "VerifiedBot": "Bot Verificado",
+    "VerifiedBotDeveloper": "Desenvolvedor de Bot Verificado",
+    "BugHunterLevel1": "Caçador de Bugs Nível 1",
+    "BugHunterLevel2": "Caçador de Bugs Nível 2",
+    "EarlySupporter": "Apoiador Antigo",
+    "Partner": "Parceiro do Discord",
+    "Staff": "Equipe do Discord",
+    "HypeSquadEvents": "Eventos Hypesquad",
+    "PremiumEarlySupporter": "Apoiador Nitro Antigo",
+};
+
+function translateBadges(badgeArray) {
+    return badgeArray.map(badge => badgeTranslations[badge] || badge).join(', ');
+}
+
 async function comandoGerarExecutar(interaction, options) {
+    await interaction.deferReply();
     const subcommand = options.getSubcommand();
 
     if (subcommand === "enquete") {
-        await interaction.deferReply();
         const topicPoll = options.getString("título");
         const description = options.getString("descrição");
         const soloImage = options.getAttachment("imagem");
@@ -135,6 +155,37 @@ async function comandoGerarExecutar(interaction, options) {
             endPoll(interaction, pollData.votes, yesTextButton, noTextButton, yesEmojiButton, noEmojiButton, topicPoll, imageUrl);
             deletePollData(interaction.id);
         });
+    } else if (subcommand === "dados-usuário") {
+        const user = options.getUser("usuário");
+        const userFlags = await user.fetchFlags();
+        const translatedBadges = translateBadges(userFlags.toArray());
+
+        let embeddedUserInfo = new EmbedBuilder({
+            title: `Dados do Usuário "${user.displayName} (${user.username}, ${user.id})"`,
+            description: "🤔 O que esse usuário tem de especial? 🤔",
+            fields: [
+                {
+                    name: "📝 Nome de Exibição",
+                    value: user.displayName || "Não disponível",
+                    inline: true
+                },
+                {
+                    name: "🧑 Nome de Usuário",
+                    value: user.username || "Não disponível",
+                    inline: true
+                },
+                {
+                    name: "🪪 ID do Usuário",
+                    value: user.id || "Não disponível"
+                },
+                {
+                    name: "🎖️ Emblemas do Usuário",
+                    value: translatedBadges || 'Nenhum emblema'
+                }
+            ]
+        });
+
+        await interaction.editReply({ embeds: [embeddedUserInfo]});
     }
 }
 
