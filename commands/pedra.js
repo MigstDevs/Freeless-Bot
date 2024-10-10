@@ -16,7 +16,7 @@ async function comandoPedraExecutar(interaction, options) {
         } else if (targetUser.id === "911646421441187931") {
             await interaction.reply('hmmmmmm');
             return;
-        } else if (targetUser.bot) {
+        } else if (targetUser.bot && targetUser.id != "911646421441187931") {
             await interaction.reply({ content: '🤖 **|** Ei! Querendo jogar com outro bot! Que feio!', ephemeral: true});
             return;
         } else {
@@ -46,7 +46,7 @@ async function comandoPedraExecutar(interaction, options) {
 
             if (!targetUserInteraction) return;
 
-            const targetUserChoice = choices.find(
+            const targetUserChoice = rpsCHOICES.find(
                 (choice) => choice.name === targetUserInteraction.customId,
             );
 
@@ -55,7 +55,7 @@ async function comandoPedraExecutar(interaction, options) {
             embed.setDescription(`É a vez de ${interaction.user}!`);
             await reply.edit({ embeds: [embed], content: `🤝 **|** ${interaction.user}, pronto? É a sua vez agora!` });
 
-            const initialUserInteraction = await reply.awaitMessageComponent({ filter: (i) => i.user.id === targetUser.id, time: 600000})
+            const initialUserInteraction = await reply.awaitMessageComponent({ filter: (i) => i.user.id === interaction.user.id, time: 600000})
             .catch(async (error) => {
                 embed.setDescription(`${interaction.user} demorou demais! Jogo cancelado 😭`);
                 await reply.edit({ embeds: [embed], components: []});
@@ -63,7 +63,7 @@ async function comandoPedraExecutar(interaction, options) {
 
             if (!initialUserInteraction) return;
 
-            const initialUserChoice = choices.find(
+            const initialUserChoice = rpsCHOICES.find(
                 (choice) => choice.name === initialUserInteraction.customId,
             );
 
