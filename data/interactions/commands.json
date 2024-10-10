@@ -1,15 +1,18 @@
 [
     {
       "name": "ping",
-      "description": "Verifica meu ping (minha latência)."
+      "description": "Verifica meu ping (minha latência).",
+      "dm_permission": true
     },
     {
       "name": "convite",
-      "description": "Obtêm o link de convite do bot."
+      "description": "Obtêm o link de convite do bot.",
+      "dm_permission": true
     },
     {
       "name": "minecraft",
       "description": "Utilidades de minecraft!",
+      "dm_permission": true,
       "options": [
         {
           "name": "status",
@@ -41,11 +44,13 @@
     },
     {
       "name": "ajuda",
-      "description": "Que raios esse bot oferece?"
+      "description": "Que raios esse bot oferece?",
+      "dm_permission": true
     },
     {
       "name": "freedoms",
       "description": "Veja quantas freedoms você tem.",
+      "dm_permission": true,
       "options": [
         {
           "name": "user",
@@ -57,22 +62,31 @@
     },
     {
       "name": "daily",
-      "description": "Colete seu bônus diário de freedoms."
+      "description": "Colete seu bônus diário de freedoms.",
+      "dm_permission": true
     },
     {
       "name": "anime",
       "description": "Várias utilidades relacionadas a vários animes.",
+      "dm_permission": false,
       "options": [
         {
-          "name": "jjk-expansão",
-          "description": "Ataca alguém com uma expansão de domínio!",
-          "type": 1,
+          "name": "jjk",
+          "description": "Várias utilidades relacionadas a Jujutsu Kaisen.",
+          "type": 2,
           "options": [
             {
-              "name": "alvo",
-              "description": "O usuário a qual atacar.",
-              "type": 6,
-              "required": "true"
+              "name": "expansão",
+              "description": "Ataca alguém com uma expansão de domínio!",
+              "type": 1,
+              "options": [
+                {
+                  "name": "alvo",
+                  "description": "O usuário a qual atacar.",
+                  "type": 6,
+                  "required": "true"
+                }
+              ]
             }
           ]
         }
@@ -80,11 +94,13 @@
     },
     {
       "name": "pensar",
-      "description": "Faz o bot ficar pensando para sempre... (NÃO FAÇA ISSO COM O FREELESS É TIPO UMA TORTURA PRA ELE)"
+      "description": "Faz o bot ficar pensando para sempre... (NÃO FAÇA ISSO COM O FREELESS É TIPO UMA TORTURA PRA ELE)",
+      "dm_permission": true
     },
     {
       "name": "remover",
       "description": "Remove algo.",
+      "dm_permission": true,
       "options": [
         {
           "name": "fundo",
@@ -103,6 +119,7 @@
     {
       "name": "gerar",
       "description": "Gera alguma coisa (uau, não me diga)!",
+      "dm_permission": true,
       "options": [
         {
           "name": "enquete",
@@ -176,11 +193,13 @@
     },
     {
       "name": "sair",
-      "description": "Use esse comando pra sair desse servidor! (Tá com preguiça de clicar com botão direito, filho?)"
+      "description": "Use esse comando pra sair desse servidor! (Tá com preguiça de clicar com botão direito, filho?)",
+      "dm_permission": false
     },
     {
       "name": "inferno",
       "description": "Um inferno de...",
+      "dm_permission": true,
       "options": [
         {
           "name": "spam",
@@ -200,6 +219,7 @@
     {
       "name": "nuke",
       "description": "Nuka o planeta (zueira, nuka algo - esquece pode nukar o mundo com isso aqui sim)",
+      "dm_permission": false,
       "options": [
         {
           "name": "local",
@@ -210,6 +230,34 @@
           "name": "global",
           "description": "Deleta todas as categorias e todos os canais deste servidor.",
           "type": 1
+        }
+      ]
+    },
+    {
+      "name": "pedra",
+      "description": "Pedra...",
+      "dm_permission": true,
+      "options": [
+        {
+          "name": "papel",
+          "description": "...Papel...",
+          "type": 2,
+          "options": [
+            {
+              "name": "tesoura",
+              "description": "Joga pedra, papel, tesoura com alguém! Uau!",
+              "dm_permission": true,
+              "type": 1,
+              "options": [
+                {
+                  "name": "oponente",
+                  "description": "Vai jogar com quem?",
+                  "type": 6,
+                  "required": true
+                }
+              ]
+            }
+          ]
         }
       ]
     }

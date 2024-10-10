@@ -19,6 +19,7 @@ import { comandoGerarExecutar } from "./commands/gerar.js";
 import { comandoSairExecutar } from "./commands/sair.js";
 import { comandoInfernoExecutar } from "./commands/inferno.js";
 import { comandoNukeExecutar } from "./commands/nuke.js";
+import { comandoPedraExecutar } from "./commands/pedra.js";
 
 import { stopRequestExpansion } from "./buttons/anime-StopPlsButton.js";
 import { fightExpansion } from "./buttons/anime-fightButton.js";
@@ -119,6 +120,9 @@ client.on("interactionCreate", async (interaction) => {
     case "nuke":
       comandoNukeExecutar(interaction, options);
       break;
+    case "pedra":
+      comandoPedraExecutar(interaction, options);
+      break;
   }
   } else if (interaction.isButton()) {
     if (interaction.customId === "botServerCheck") {
@@ -137,7 +141,7 @@ client.on("interactionCreate", async (interaction) => {
 
       await thread.members.add(user.id);
 
-      await thread.send(`Ticket opened! The ticket's opener is <@${user.id}>! If you want to close the ticket, just send "-ticket end"!\n-# <@&1289010136957845524>`,);
+      await thread.send(`Ticket opened! The ticket's opener is ${user}! If you want to close the ticket, just send "-ticket end"!\n-# <@&1289010136957845524>`,);
 
       await interaction.reply({ content: `Ticket created successfully! It can be located at <#${thread.id}>.`, ephemeral: true})
     } else if (interaction.customId.startsWith("fightButton-expansion-")) {
@@ -148,7 +152,7 @@ client.on("interactionCreate", async (interaction) => {
   
     if (commandName === "Obter Informações") {
       await interaction.reply({
-        content: `Conteúdo da mensagem: ${targetMessage.content}\nAutor: <@${targetMessage.author.id}>`,
+        content: `Conteúdo da mensagem: ${targetMessage.content}\nAutor: ${targetMessage.author}`,
         ephemeral: true
       });
     }

@@ -19,9 +19,10 @@ function saveCommandExecuters(commandExecuters) {
 let commandExecuters = loadCommandExecuters();
 
 async function comandoAnimeExecutar(interaction, options) {
+    const subcommandGroup = options.getSubcommandGroup();
     const subcommand = options.getSubcommand();
 
-    if (subcommand === "jjk-expansão") {
+    if (subcommandGroup === "jjk" && subcommand === "expansão") {
         await interaction.deferReply();
 
         const randomMsg = Math.floor(Math.random() * 5);
@@ -30,7 +31,7 @@ async function comandoAnimeExecutar(interaction, options) {
 
         const executerUser = interaction.user;
         commandExecuters[interaction.id] = executerUser;
-        saveCommandExecuters(commandExecuters); // Save to file
+        saveCommandExecuters(commandExecuters);
 
         if (randomMsg === 0) gifAtk = "https://i.pinimg.com/originals/83/85/46/838546ec7d2352266b860764d8b5ece0.gif";
         if (randomMsg === 1) gifAtk = "https://i.pinimg.com/originals/14/fc/7d/14fc7d1120735dd8e2064a38913ea339.gif";
@@ -39,7 +40,7 @@ async function comandoAnimeExecutar(interaction, options) {
         if (randomMsg === 4) gifAtk = "https://c.tenor.com/3fzEJTA3ykUAAAAC/tenor.gif";
 
         const attackEmbed = new EmbedBuilder({
-            "description": `🥊 **| <@${executerUser.id}> atacou <@${target.id}>!**`,
+            "description": `🥊 **| ${executerUser} atacou ${target}!**`,
             "color": 0x8B0000,
             "image": {
                 "url": gifAtk
@@ -61,18 +62,18 @@ async function comandoAnimeExecutar(interaction, options) {
         const expansionButtonDisplays = new ActionRowBuilder().addComponents(stopPlsButton, fightButton);
 
         if (target.id === executerUser.id) {
-            attackEmbed.setDescription(`❓ **| <@${executerUser.id}>... abriu uma expansão de domínio sozinho?**`);
+            attackEmbed.setDescription(`❓ **| ${executerUser}... abriu uma expansão de domínio sozinho?**`);
             attackEmbed.setFooter({ text: "Você está ciente de que ela não causa nenhum efeito em você mesmo, né?" });
             attackEmbed.setImage(null);
 
-            await interaction.editReply({ content: `||<@${target.id}>||`, embeds: [attackEmbed] });
+            await interaction.editReply({ content: `||${target}>||`, embeds: [attackEmbed] });
         } else if (target.id === "911646421441187931") {
-            attackEmbed.setDescription(`😡 **| <@${executerUser.user.id}> TENTOU ME ATACAR!!!**`);
+            attackEmbed.setDescription(`😡 **| ${executerUser} TENTOU ME ATACAR!!!**`);
             attackEmbed.setFooter({ text: "Agora eu fiquei bravo..." });
 
-            await interaction.editReply({ content: `||<@${executerUser.user.id}>||`, embeds: [attackEmbed] });
+            await interaction.editReply({ content: `||${executerUser}||`, embeds: [attackEmbed] });
         } else if (target.id != "911646421441187931" && target.id != executerUser.id) {
-            await interaction.editReply({ content: `||<@${target.id}>||`, embeds: [attackEmbed], components: [expansionButtonDisplays] });
+            await interaction.editReply({ content: `||${target}||`, embeds: [attackEmbed], components: [expansionButtonDisplays] });
         }
     }
 }

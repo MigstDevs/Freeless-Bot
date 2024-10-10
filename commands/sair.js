@@ -7,7 +7,7 @@ async function comandoSairExecutar(interaction) {
     await interaction.deferReply();
 
     if (user.id === owner.id) {
-        return await interaction.editReply(`🫤 **|** Cara... O que cê tá pensando?\n👑 **|** Você, <@${owner.id}>, é o **DONO** deste servidor. Donos do próprio servidor não podem ~~ser expulsos~~ sair do servidor!`);
+        return await interaction.editReply(`🫤 **|** Cara... O que cê tá pensando?\n👑 **|** Você, ${owner}, é o **DONO** deste servidor. Donos do próprio servidor não podem ~~ser expulsos~~ sair do servidor!`);
     }
 
     if (!botMember.permissions.has('KICK_MEMBERS')) {
@@ -15,10 +15,10 @@ async function comandoSairExecutar(interaction) {
     }
 
     if (botMember.roles.highest.position <= member.roles.highest.position) {
-        return await interaction.editReply(`😬 **|** Eu não posso ~~expulsar~~ remover você, <@${user.id}>, porque meu cargo é menor ou igual ao seu na hierarquia de cargos!`);
+        return await interaction.editReply(`😬 **|** Eu não posso ~~expulsar~~ remover você, ${user.id}, porque meu cargo é menor ou igual ao seu na hierarquia de cargos!`);
     }
 
-    await interaction.editReply(`💔 **|** Woosh! E lá se vai ele...\n😭 **|** <@${user.id}> saiu do servidor!`);
+    await interaction.editReply(`💔 **|** Woosh! E lá se vai ele...\n😭 **|** ${user} saiu do servidor!`);
     await member.kick("Quis sair do servidor 😢");
 }
 

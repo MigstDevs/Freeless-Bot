@@ -68,7 +68,7 @@ async function comandoNukeExecutar(interaction, options) {
                     permissionOverwrites: channelProps.permissionOverwrites
                 });
 
-                await newChannel.send(`👍 **|** Esse canal foi nukado por <@${interaction.user.id}>!`);
+                await newChannel.send(`💣 **|** Esse canal foi nukado por ${interaction.user}!`);
                 collector.stop();
             }
         });
