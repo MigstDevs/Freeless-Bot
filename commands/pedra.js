@@ -26,7 +26,7 @@ async function comandoPedraExecutar(interaction, options) {
             .setDescription(`É a vez do bot! O bot escolheu ${botChoice.name}!`)
             .setTimestamp(new Date());
         
-            await interaction.reply({ content: `🤖 **|** O bot escolheu ${botChoice.emoji} ${botChoice.name}!`, embeds: [embed] });
+            await interaction.reply({ content: `🤖 **|** Bora lá! Já fiz minha escolha...`, embeds: [embed] });
         
             const userChoiceInteraction = await interaction.channel.awaitMessageComponent({ filter: (i) => i.user.id === interaction.user.id, time: 600000 })
             .catch(async (error) => {
