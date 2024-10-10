@@ -48,7 +48,7 @@ async function comandoPedraExecutar(interaction, options) {
         
             const userChoice = rpsCHOICES.find(choice => choice.name === userChoiceInteraction.customId);
 
-            await targetUserInteraction.reply({ content: `${userChoice.emoji} **|** Você escolheu ${userChoice.name}!`, ephemeral: true});
+            await userChoiceInteraction.reply({ content: `${userChoice.emoji} **|** Você escolheu ${userChoice.name}!`, ephemeral: true});
         
             let result;
             if (botChoice.beats === userChoice.name) result = `O bot ganhou o jogo!`;
@@ -57,7 +57,7 @@ async function comandoPedraExecutar(interaction, options) {
         
             embed.setDescription(`${botChoice.emoji} **|** O bot escolheu ${botChoice.name}!\n${userChoice.emoji} **|** ${interaction.user} escolheu ${userChoice.name}!\n\n${result}`);
         
-            await interaction.editReply({ embeds: [embed], components: [], content: `❌ **|** Jogo acabou!` });
+            await interaction.editReply({ embeds: [embed], components: [], content: `👾 **|** Jogo acabou!` });
             return;
         } else if (targetUser.bot && targetUser.id != "911646421441187931") {
             await interaction.deferReply({ ephemeral: true });
@@ -121,7 +121,7 @@ async function comandoPedraExecutar(interaction, options) {
 
             embed.setDescription(`${targetUserChoice.emoji} **|** ${targetUser} escolheu ${targetUserChoice.name}!\n${initialUserChoice.emoji} **|** ${interaction.user} escolheu ${initialUserChoice.name}!\n\n${result}`);
 
-            await reply.edit({ embeds: [embed], components: [], content: `❌ **|** Jogo acabou!` });
+            await reply.edit({ embeds: [embed], components: [], content: `👾 **|** Jogo acabou!` });
             return;
         }
     } catch (error){
