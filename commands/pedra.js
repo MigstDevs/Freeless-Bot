@@ -23,10 +23,20 @@ async function comandoPedraExecutar(interaction, options) {
             const embed = new EmbedBuilder()
             .setTitle('Pedra Papel Tesoura!')
             .setColor('Yellow')
-            .setDescription(`É a vez do bot! O bot escolheu ${botChoice.name}!`)
+            .setDescription(`O Bot já escolheu! Agora escolha!`)
             .setTimestamp(new Date());
+
+            const buttons = rpsCHOICES.map((choice) => {
+                return new ButtonBuilder()
+                .setCustomId(choice.name)
+                .setLabel(choice.name)
+                .setEmoji(choice.emoji)
+                .setStyle(ButtonStyle.Secondary);
+            });
+
+            const buttonDisplay = new ActionRowBuilder().addComponents(buttons);
         
-            await interaction.editReply({ content: `🤖 **|** Bora lá! Já fiz minha escolha...`, embeds: [embed] });
+            await interaction.editReply({ content: `🤖 **|** Bora lá! Já fiz minha escolha...`, embeds: [embed], components: [buttonDisplay] });
         
             const userChoiceInteraction = await interaction.channel.awaitMessageComponent({ filter: (i) => i.user.id === interaction.user.id, time: 600000 })
             .catch(async (error) => {
@@ -37,6 +47,8 @@ async function comandoPedraExecutar(interaction, options) {
             if (!userChoiceInteraction) return;
         
             const userChoice = rpsCHOICES.find(choice => choice.name === userChoiceInteraction.customId);
+
+            await targetUserInteraction.reply({ content: `${userChoice.emoji} **|** Você escolheu ${userChoice.name}!`, ephemeral: true});
         
             let result;
             if (botChoice.beats === userChoice.name) result = `O bot ganhou o jogo!`;
