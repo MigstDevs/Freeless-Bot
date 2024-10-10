@@ -12,7 +12,7 @@ async function comandoPedraExecutar(interaction, options) {
 
         if (interaction.user.id === targetUser.id) {
             await interaction.deferReply({ ephemeral: true });
-            await interaction.reply({ content: '😑 **|** Você não vai jogar pedra papel tesoura com você mesmo, né?', ephemeral: true});
+            await interaction.editReply({ content: '😑 **|** Você não vai jogar pedra papel tesoura com você mesmo, né?', ephemeral: true});
             return;
         } else if (targetUser.id === "911646421441187931") {
             await interaction.deferReply();
@@ -26,7 +26,7 @@ async function comandoPedraExecutar(interaction, options) {
             .setDescription(`É a vez do bot! O bot escolheu ${botChoice.name}!`)
             .setTimestamp(new Date());
         
-            await interaction.reply({ content: `🤖 **|** Bora lá! Já fiz minha escolha...`, embeds: [embed] });
+            await interaction.editReply({ content: `🤖 **|** Bora lá! Já fiz minha escolha...`, embeds: [embed] });
         
             const userChoiceInteraction = await interaction.channel.awaitMessageComponent({ filter: (i) => i.user.id === interaction.user.id, time: 600000 })
             .catch(async (error) => {
@@ -49,7 +49,7 @@ async function comandoPedraExecutar(interaction, options) {
             return;
         } else if (targetUser.bot && targetUser.id != "911646421441187931") {
             await interaction.deferReply({ ephemeral: true });
-            await interaction.reply({ content: '🤖 **|** Ei! Querendo jogar com outro bot! Que feio!', ephemeral: true});
+            await interaction.editReply({ content: '🤖 **|** Ei! Querendo jogar com outro bot! Que feio!', ephemeral: true});
             return;
         } else {
             await interaction.deferReply();
@@ -70,7 +70,7 @@ async function comandoPedraExecutar(interaction, options) {
 
             const buttonDisplay = new ActionRowBuilder().addComponents(buttons);
 
-            const reply = await interaction.reply({ content: `🥊 **|** ${targetUser}, ${interaction.user} te chamou pra uma partida de pedra papel tesoura!\n\n🖱️ **|** Use os botões abaixo pra jogar!`, embeds: [embed], components: [buttonDisplay]})
+            const reply = await interaction.editReply({ content: `🥊 **|** ${targetUser}, ${interaction.user} te chamou pra uma partida de pedra papel tesoura!\n\n🖱️ **|** Use os botões abaixo pra jogar!`, embeds: [embed], components: [buttonDisplay]})
 
             const targetUserInteraction = await reply.awaitMessageComponent({ filter: (i) => i.user.id === targetUser.id, time: 600000})
             .catch(async (error) => {
