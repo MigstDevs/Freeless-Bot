@@ -11,15 +11,49 @@ async function comandoPedraExecutar(interaction, options) {
         const targetUser = options.getUser('oponente');
 
         if (interaction.user.id === targetUser.id) {
+            await interaction.deferReply({ ephemeral: true });
             await interaction.reply({ content: '😑 **|** Você não vai jogar pedra papel tesoura com você mesmo, né?', ephemeral: true});
             return;
         } else if (targetUser.id === "911646421441187931") {
-            await interaction.reply('hmmmmmm');
+            await interaction.deferReply();
+
+            const randomIndex = Math.floor(Math.random() * 3);
+            const botChoice = rpsCHOICES[randomIndex];
+        
+            const embed = new EmbedBuilder()
+            .setTitle('Pedra Papel Tesoura!')
+            .setColor('Yellow')
+            .setDescription(`É a vez do bot! O bot escolheu ${botChoice.name}!`)
+            .setTimestamp(new Date());
+        
+            await interaction.reply({ content: `🤖 **|** O bot escolheu ${botChoice.emoji} ${botChoice.name}!`, embeds: [embed] });
+        
+            const userChoiceInteraction = await interaction.channel.awaitMessageComponent({ filter: (i) => i.user.id === interaction.user.id, time: 600000 })
+            .catch(async (error) => {
+                embed.setDescription(`${interaction.user} demorou demais! Jogo cancelado 😭`);
+                await interaction.editReply({ embeds: [embed], components: [] });
+            });
+        
+            if (!userChoiceInteraction) return;
+        
+            const userChoice = rpsCHOICES.find(choice => choice.name === userChoiceInteraction.customId);
+        
+            let result;
+            if (botChoice.beats === userChoice.name) result = `O bot ganhou o jogo!`;
+            else if (userChoice.beats === botChoice.name) result = `${interaction.user} ganhou o jogo!`;
+            else result = `Foi um empate!`;
+        
+            embed.setDescription(`${botChoice.emoji} **|** O bot escolheu ${botChoice.name}!\n${userChoice.emoji} **|** ${interaction.user} escolheu ${userChoice.name}!\n\n${result}`);
+        
+            await interaction.editReply({ embeds: [embed], components: [], content: `❌ **|** Jogo acabou!` });
             return;
         } else if (targetUser.bot && targetUser.id != "911646421441187931") {
+            await interaction.deferReply({ ephemeral: true });
             await interaction.reply({ content: '🤖 **|** Ei! Querendo jogar com outro bot! Que feio!', ephemeral: true});
             return;
         } else {
+            await interaction.deferReply();
+
             const embed = new EmbedBuilder()
             .setTitle('Pedra Papel Tesoura!')
             .setColor('Yellow')
@@ -73,7 +107,7 @@ async function comandoPedraExecutar(interaction, options) {
             else if (initialUserChoice.beats === targetUserChoice.name) result = `${interaction.user} ganhou o jogo!`;
             else result = `Foi um empate!`;
 
-            embed.setDescription(`${targetUserChoice.emoji} **|** ${targetUser} escolheu ${targetUserChoice.name}!\n${initialUserChoice.emoji} **|** ${interaction.user} escolheu ${targetUserChoice.name}!\n\n${result}`);
+            embed.setDescription(`${targetUserChoice.emoji} **|** ${targetUser} escolheu ${targetUserChoice.name}!\n${initialUserChoice.emoji} **|** ${interaction.user} escolheu ${initialUserChoice.name}!\n\n${result}`);
 
             await reply.edit({ embeds: [embed], components: [], content: `❌ **|** Jogo acabou!` });
             return;
