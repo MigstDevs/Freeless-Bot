@@ -260,5 +260,24 @@
           ]
         }
       ]
+    },
+    {
+      "name": "configurar",
+      "description": "Configura algo.",
+      "dm_permission": false,
+      "options": [
+        {
+          "name": "cargo",
+          "description": "Configura um cargo...",
+          "type": 2,
+          "options": [
+            {
+              "name": "automático",
+              "description": "Configura um cargo que será adicionado a todos que entrarem no seu servidor.",
+              "type": 1
+            }
+          ]
+        }
+      ]
     }
   ]  

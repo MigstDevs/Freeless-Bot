@@ -20,6 +20,7 @@ import { comandoSairExecutar } from "./commands/sair.js";
 import { comandoInfernoExecutar } from "./commands/inferno.js";
 import { comandoNukeExecutar } from "./commands/nuke.js";
 import { comandoPedraExecutar } from "./commands/pedra.js";
+import { comandoConfigurarExecutar } from "./commands/configurar.js";
 
 import { stopRequestExpansion } from "./buttons/anime-StopPlsButton.js";
 import { fightExpansion } from "./buttons/anime-fightButton.js";
@@ -36,6 +37,7 @@ const client = new Client({
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
+    GatewayIntentBits.GuildMembers
   ],
 });
 
@@ -54,7 +56,7 @@ client.on("ready", async () => {
   client.user.setPresence({
     activities: [
       {
-        name: `falar de que você recebe ajuda ao executar /ajuda`,
+        name: `CARGOS AUTOMÁTICOS!`,
         type: ActivityType.Listening,
       }
     ],
@@ -73,6 +75,27 @@ client.on("ready", async () => {
     console.log("Terminei de atualizar os comandos barra.");
   } catch (error) {
     console.error(error);
+  }
+});
+
+client.on("guildMemberAdd", async (member) => {
+  const autoroleFilePath = './data/interactions/autorole/autoroles.json';
+
+  if (fs.existsSync(autoroleFilePath)) {
+    const autoroleData = JSON.parse(fs.readFileSync(autoroleFilePath, 'utf-8'));
+
+    if (autoroleData[member.guild.id]) {
+      const roleId = autoroleData[member.guild.id];
+
+      try {
+        const role = await member.guild.roles.fetch(roleId);
+        if (role) {
+          await member.roles.add(role);
+        } else return;
+      } catch (error) {
+        console.error(`Error: ${error}`);
+      }
+    }
   }
 });
 
@@ -122,6 +145,9 @@ client.on("interactionCreate", async (interaction) => {
       break;
     case "pedra":
       comandoPedraExecutar(interaction, options);
+      break;
+    case "configurar":
+      comandoConfigurarExecutar(interaction, options);
       break;
   }
   } else if (interaction.isButton()) {
