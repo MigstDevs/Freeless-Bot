@@ -24,7 +24,7 @@ async function comandoConfigurarExecutar(interaction, options) {
 
     if (subcommandGroup === "cargo" && subcommand === "automático") {
         if (!hasPermission('ManageRoles')) {
-            await interaction.editReply('❌ **|** Você não tem permissão pra fazer isso! Volte quando puder `Gerenciar Cargos`, OK?');
+            await interaction.editReply('❎ **|** Você não tem permissão pra fazer isso! Volte quando puder `Gerenciar Cargos`, OK?');
             return;
         }
         const roleSel = new RoleSelectMenuBuilder()

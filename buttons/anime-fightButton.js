@@ -38,7 +38,7 @@ async function fightExpansion(interaction) {
             await interaction.reply({ content: `🥊 **|** Eita! ${interaction.user}> chamou ${executerUser} para lutar!`, components: [actionRow]});
         }
     } else {
-        await interaction.reply({ content: "❌ **|** Não consegui encontrar o usuário que iniciou a expansão!", ephemeral: true});
+        await interaction.reply({ content: "❎ **|** Não consegui encontrar o usuário que iniciou a expansão!", ephemeral: true});
     }
 }
 

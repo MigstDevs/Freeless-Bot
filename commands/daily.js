@@ -18,7 +18,7 @@ async function comandoDailyExecutar (interaction) {
   const userDailyId = interaction.user.id;
 
   if (dailyCooldown[userDailyId] === now) {
-    await interaction.editReply("❌ Você já coletou seu bônus diário hoje!");
+    await interaction.editReply("❎ **|** Você já coletou seu bônus diário hoje!");
   } else {
     const dailyFreedoms = Math.floor(Math.random() * (5000 - 1500 + 1)) + 1500;
     freedoms[userDailyId] = (freedoms[userDailyId] || 0) + dailyFreedoms;

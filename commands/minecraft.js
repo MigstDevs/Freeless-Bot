@@ -55,7 +55,7 @@ async function comandoMinecraftExecutar(interaction, options) {
             color: 0xff0000,
             fields: [
               { name: '⚡Online', value: `${isOnline}`, inline: true },
-              { name: '❌Erro:', value: 'Servidor Offline / IP Inválido!' },
+              { name: '❌ Erro:', value: 'Servidor Offline / IP Inválido!' },
             ],
           });
 

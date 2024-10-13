@@ -5,6 +5,7 @@ import { Routes } from "discord-api-types/v9";
 import express from "express";
 import dotenv from 'dotenv';
 
+import { execute } from "./commands/textCommands/run.js";
 
 import { comandoPingExecutar } from "./commands/ping.js";
 import { comandoConviteExecutar } from "./commands/convite.js";
@@ -76,6 +77,10 @@ client.on("ready", async () => {
   } catch (error) {
     console.error(error);
   }
+});
+
+client.on("messageCreate", async (message) => {
+  await execute(message);
 });
 
 client.on("guildMemberAdd", async (member) => {

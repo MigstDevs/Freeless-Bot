@@ -32,7 +32,7 @@ async function comandoNukeExecutar(interaction, options) {
     
     if (subcommand === "local") {
         if (!hasPermission('ManageMessages')) {
-            return interaction.editReply({ content: '❌ **|** Você não tem permissão pra fazer isso!', ephemeral: true });
+            return interaction.editReply({ content: '❎ **|** Você não tem permissão pra fazer isso!', ephemeral: true });
         }
 
         const replyMessage = await interaction.editReply({ embeds: [sureEmbed], components: [buttonDisplayer] });
@@ -82,7 +82,7 @@ async function comandoNukeExecutar(interaction, options) {
     } else if (subcommand === "global") {
         const guildOwner = await guild.fetchOwner();
         if (guildOwner.id !== member.id && !hasPermission('ManageChannels')) {
-            return interaction.editReply({ content: '❌ **|** Você não tem permissão pra fazer isso!', ephemeral: true });
+            return interaction.editReply({ content: '❎ **|** Você não tem permissão pra fazer isso!', ephemeral: true });
         }
 
         sureEmbed = new EmbedBuilder({
