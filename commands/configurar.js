@@ -109,6 +109,9 @@ async function comandoConfigurarExecutar(interaction, options) {
                 });
             }
         });
+    } else if (!subcommandGroup && subcommand === "servidor") {
+        await interaction.deferReply({ ephemeral: true });
+        await interaction.editReply('Comando em desenvolvimento ;)');
     }
 }
 

@@ -277,6 +277,30 @@
               "type": 1
             }
           ]
+        },
+        {
+          "name": "servidor",
+          "description": "Configura informações básicas do seu servidor",
+          "type": 1
+        }
+      ]
+    },
+    {
+      "name":  "warn",
+      "description": "Avisa alguém no privado de que ela tá fazendo algo de errado!",
+      "dm_permission": false,
+      "options": [
+        {
+          "name": "usuário",
+          "description": "Quem você vai avisar?",
+          "type": 6,
+          "required": true
+        },
+        {
+          "name": "motivo",
+          "description": "Sobre o que ele está sendo avisado?",
+          "type": 3,
+          "required": false
         }
       ]
     }

@@ -22,6 +22,7 @@ import { comandoInfernoExecutar } from "./commands/inferno.js";
 import { comandoNukeExecutar } from "./commands/nuke.js";
 import { comandoPedraExecutar } from "./commands/pedra.js";
 import { comandoConfigurarExecutar } from "./commands/configurar.js";
+import { comandoWarnExecutar } from "./commands/warn.js";
 
 import { stopRequestExpansion } from "./buttons/anime-StopPlsButton.js";
 import { fightExpansion } from "./buttons/anime-fightButton.js";
@@ -80,7 +81,7 @@ client.on("ready", async () => {
 });
 
 client.on("messageCreate", async (message) => {
-  await execute(message);
+  await execute(message, client);
 });
 
 client.on("guildMemberAdd", async (member) => {
@@ -153,6 +154,9 @@ client.on("interactionCreate", async (interaction) => {
       break;
     case "configurar":
       comandoConfigurarExecutar(interaction, options);
+      break;
+    case "warn":
+      comandoWarnExecutar(interaction, options);
       break;
   }
   } else if (interaction.isButton()) {

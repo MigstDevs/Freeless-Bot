@@ -7,8 +7,9 @@ const defaultPrefix = "fl!";
 const guildPrefixesFile = "./data/prefixes/guildPrefixes.json";
 let guildPrefixes = JSON.parse(fs.readFileSync(guildPrefixesFile, "utf-8"));
 
-async function freedomsCheck(message) {
+async function freedomsCheck(message, client) {
   const guildPrefix = guildPrefixes[message.guild.id] || defaultPrefix;
+  var loritta = client.users.fetch('297153970613387264');
 
     if (message.content.startsWith(guildPrefix + "freedoms")) {
         const userId = message.author.id;
@@ -24,7 +25,8 @@ async function freedomsCheck(message) {
         } else if (userFreedoms >= 10000 && userFreedoms < 50000) {
           response = `💸 **|** Você possui <:freedoms:1282757761406468128> ${userFreedoms} <:freedoms:1282757761406468128> freedoms!\n 💰 **|** É um salário mínimo, e portanto, pode melhorar, mas é melhor do que nada!`;
         } else if (userFreedoms >= 50000 & userFreedoms < 100000) {
-          response = `💸 **|** Você possui <:freedoms:1282757761406468128> ${userFreedoms} <:freedoms:1282757761406468128> freedoms!\n 🤑 **|** Já tá bom, mas continue com seus sonhos! (Cadê a <@297153970613387264> kkkk)`;
+          if (loritta) response = `💸 **|** Você possui <:freedoms:1282757761406468128> ${userFreedoms} <:freedoms:1282757761406468128> freedoms!\n 🤑 **|** Já tá bom, mas continue com seus sonhos! (Cadê a ${loritta} kkkk)`;
+          else response = `💸 **|** Você possui <:freedoms:1282757761406468128> ${userFreedoms} <:freedoms:1282757761406468128> freedoms!\n 🤑 **|** Já tá bom, mas continue com seus sonhos!`;
         } else if (userFreedoms >= 100000 & userFreedoms < 200000 ) {
           response = `💸 **|** Você possui <:freedoms:1282757761406468128> ${userFreedoms} <:freedoms:1282757761406468128> freedoms!\n 🫢 **|** Uau! Você tá incrível, continua assim!`;
         } else if (userFreedoms >= 200000 && userFreedoms < 500000) {
