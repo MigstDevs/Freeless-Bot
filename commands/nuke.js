@@ -85,10 +85,7 @@ async function comandoNukeExecutar(interaction, options) {
             return interaction.editReply({ content: '❎ **|** Você não tem permissão pra fazer isso!', ephemeral: true });
         }
 
-        sureEmbed = new EmbedBuilder({
-            title: '⚠️ Ei! Calma lá!',
-            description: 'Você está prestes a DELETAR TODOS os canais e categorias deste servidor. Tem certeza do que está fazendo?'
-        });
+        sureEmbed.setDescription('Você está prestes a DELETAR TODOS os canais e categorias deste servidor. Tem certeza do que está fazendo?');
 
         const replyMessage = await interaction.editReply({ embeds: [sureEmbed], components: [buttonDisplayer] });
 

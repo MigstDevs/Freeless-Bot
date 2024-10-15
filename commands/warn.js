@@ -5,11 +5,11 @@ async function comandoWarnExecutar(interaction, options) {
     const userToWarn = options.getUser("usuário");
     const warnReason = options.getString("motivo") || "😿 | Motivo não especificado";
 
-    const hasTimeoutPermission = interaction.member.permissions.has(PermissionsBitField.Flags.TimeoutMembers);
+    const hasTimeoutPermission = interaction.member.permissions.has(PermissionsBitField.Flags.MuteMembers);
 
     if (!hasTimeoutPermission) {
         await interaction.editReply({
-            content: '❌ **|** Você não tem permissão para avisar membros! Você precisa da permissão `Timeout de Membros`.',
+            content: '❌ **|** Você não tem permissão para avisar membros! Você precisa da permissão para `Mutar Membros`.',
             ephemeral: true
         });
         return;
@@ -29,8 +29,9 @@ async function comandoWarnExecutar(interaction, options) {
         embed.setDescription(`Olá, ${userToWarn}! Você foi avisado em ${interaction.guild.name}, e esse aviso foi enviado por ${interaction.user}! Tome mais cuidado da próxima vez, está bem?\n\n_Motivo:_ \`${warnReason}\``)
     }
 
-    await userToWarn.send({ embeds: [embed] }).catch(error => {
+    await userToWarn.send({ embeds: [embed] }).catch(async error => {
         console.error('Could not send warning DM to the user:', error);
+        await interaction.editReply('❌ **|** Algum erro desconhecido ocorreu ao enviar a mensagem! O usuário possivelmente bloqueou o bot ou está com as DMs desativadas.');
     });
 
     await interaction.editReply({

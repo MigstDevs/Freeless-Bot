@@ -1,6 +1,5 @@
 import { EmbedBuilder } from 'discord.js';
 import fetch from 'node-fetch';
-import { lookupName } from 'namemc';
 
 async function getPlayerUuid(playerName) {
     const response = await fetch(`https://api.mojang.com/users/profiles/minecraft/${playerName}`);
@@ -10,6 +9,8 @@ async function getPlayerUuid(playerName) {
 }
 
 async function comandoMinecraftExecutar(interaction, options) {
+  await interaction.deferReply();
+
   const subcommand = options.getSubcommand();
 
   if (subcommand === 'status') {
@@ -35,12 +36,12 @@ async function comandoMinecraftExecutar(interaction, options) {
             title: `Status do Servidor ${ip}`,
             color: 0xe1bbdc,
             fields: [
-              { name: '⚡Online', value: `${isOnline}`, inline: true },
-              { name: '👥 Jogadores Atuais', value: `${data.players.now}`, inline: true },
-              { name: '👥 Jogadores Máximos', value: `${data.players.max}`, inline: true },
-              { name: '✍️ Versão do Servidor', value: `${data.server.name}`, inline: true },
+              { name: '⚡Online', value: isOnline, inline: true },
+              { name: '👥 Jogadores Atuais', value: data.players.now, inline: true },
+              { name: '👥 Jogadores Máximos', value: data.players.max, inline: true },
+              { name: '✍️ Versão do Servidor', value: data.server.name, inline: true },
               { name: '🕰️ Última vez atualizado na API', value: formattedDate, inline: true },
-              { name: '📝M.O.T.D', value: `${data.motd}`, inline: true },
+              { name: '📝M.O.T.D', value: data.motd, inline: true },
             ],
             footer: {
               text: `Executado por ${interaction.member.displayName}`,
@@ -48,7 +49,7 @@ async function comandoMinecraftExecutar(interaction, options) {
             },
           });
 
-          interaction.reply({ embeds: [embed], ephemeral: false });
+          await interaction.editReply({ embeds: [embed], ephemeral: false });
         } else if (data.status === "error") {
           const issueEmbed = new EmbedBuilder({
             title: `Erro`,
@@ -59,13 +60,12 @@ async function comandoMinecraftExecutar(interaction, options) {
             ],
           });
 
-          await interaction.reply({
-            embeds: [issueEmbed],
-            ephemeral: true,
+          await interaction.editReply({
+            embeds: [issueEmbed]
           });
         }
       } catch (error) {
-        await interaction.reply({
+        await interaction.editReply({
           content: 'Ocorreu um erro ao obter informações do servidor.',
           ephemeral: true,
         });
@@ -98,7 +98,7 @@ async function comandoMinecraftExecutar(interaction, options) {
       },
     });
 
-    await interaction.reply({ embeds: [embed], ephemeral: false });
+    await interaction.editReply({ embeds: [embed], ephemeral: false });
   }
 }
 
