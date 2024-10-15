@@ -116,10 +116,80 @@ async function comandoConfigurarExecutar(interaction, options) {
             return;
         }
 
-        const existingCategory = interaction.guild.channels.cache.find(c => c.name === 'Info' && c.type === ChannelType.GuildCategory);
+        const existingCategory = interaction.guild.channels.cache.find(
+            (c) => c.type === ChannelType.GuildCategory && c.name.toLowerCase().includes('info')
+        );
 
         if (existingCategory) {
-            await interaction.editReply('❓ **|** A categoria "Info" já existe. Deseja recriar as regras e anúncios?');
+            const confirmButton = new ButtonBuilder()
+                .setCustomId('confirm_recreate')
+                .setLabel('Confirmar')
+                .setStyle(ButtonStyle.Success);
+            
+            const cancelButton = new ButtonBuilder()
+                .setCustomId('cancel_recreate')
+                .setLabel('Cancelar')
+                .setStyle(ButtonStyle.Danger);
+
+            const buttonRow = new ActionRowBuilder().addComponents(confirmButton, cancelButton);
+
+            await interaction.editReply({
+                content: '❓ **|** Uma categoria contendo "Info" já existe. Deseja recriar as regras e anúncios?',
+                components: [buttonRow]
+            });
+
+            const collector = interaction.channel.createMessageComponentCollector({
+                componentType: ComponentType.Button,
+                time: 15000,
+                filter: (btnInt) => btnInt.user.id === interaction.user.id
+            });
+
+            collector.on('collect', async (buttonInteraction) => {
+                if (buttonInteraction.customId === 'confirm_recreate') {
+                    await existingCategory.delete('Recriando a categoria "Info"');
+
+                    const infoCategory = await interaction.guild.channels.create({
+                        name: 'Info',
+                        type: ChannelType.GuildCategory,
+                        reason: 'Categoria de Informações recriada pelo Freeless Bot'
+                    });
+
+                    const rulesChannel = await interaction.guild.channels.create({
+                        name: 'regras',
+                        type: ChannelType.GuildText,
+                        parent: infoCategory.id,
+                        reason: 'Canal de Regras recriado pelo Freeless Bot',
+                        topic: 'Regras do servidor'
+                    });
+
+                    const announcementsChannel = await interaction.guild.channels.create({
+                        name: 'anúncios',
+                        type: ChannelType.GuildText,
+                        parent: infoCategory.id,
+                        reason: 'Canal de Anúncios recriado pelo Freeless Bot',
+                        topic: 'Anúncios importantes do servidor'
+                    });
+
+                    await buttonInteraction.update({
+                        content: `✅ **|** A categoria "Info" foi recriada com os canais ${rulesChannel} e ${announcementsChannel}!`,
+                        components: []
+                    });
+                } else if (buttonInteraction.customId === 'cancel_recreate') {
+                    await buttonInteraction.update({
+                        content: '❌ **|** A recriação da categoria "Info" foi cancelada!',
+                        components: []
+                    });
+                }
+            });
+
+            collector.on('end', async (_, reason) => {
+                if (reason === 'time') {
+                    await interaction.editReply({
+                        content: '⏳ **|** Tempo esgotado! Nenhuma ação foi realizada.',
+                        components: []
+                    });
+                }
+            });
         } else {
             const infoCategory = await interaction.guild.channels.create({
                 name: 'Info',
