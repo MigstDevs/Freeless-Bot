@@ -1,4 +1,4 @@
-import { RoleSelectMenuBuilder, ActionRowBuilder, ComponentType, PermissionsBitField, ButtonBuilder, ButtonStyle } from 'discord.js';
+import { RoleSelectMenuBuilder, ActionRowBuilder, ComponentType, PermissionsBitField, ButtonBuilder, ButtonStyle, ChannelType } from 'discord.js';
 import fs from 'fs';
 import path from 'path';
 
