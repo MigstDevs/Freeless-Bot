@@ -146,6 +146,12 @@ async function comandoConfigurarExecutar(interaction, options) {
 
             collector.on('collect', async (buttonInteraction) => {
                 if (buttonInteraction.customId === 'confirm_recreate') {
+                    const channelsToDelete = existingCategory.children;
+
+                    for (const channel of channelsToDelete.values()) {
+                        await channel.delete('Removendo canal antes de recriar a categoria "Info"');
+                    }
+                    
                     await existingCategory.delete('Recriando a categoria "Info"');
 
                     const infoCategory = await interaction.guild.channels.create({
