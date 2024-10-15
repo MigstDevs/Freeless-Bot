@@ -109,68 +109,41 @@ async function comandoConfigurarExecutar(interaction, options) {
                 });
             }
         });
-    } else if (!subcommandGroup && subcommand === "servidor") {
-        const channels = interaction.guild.channels.cache;
+    } else if (subcommand === "servidor") {
+        const hasManageChannelsPerm = hasPermission('ManageChannels');
+        if (!hasManageChannelsPerm) {
+            await interaction.editReply('❌ **|** Você precisa da permissão `Gerenciar Canais` para configurar o servidor!');
+            return;
+        }
 
-        const buttonYes = new ButtonBuilder()
-        .setCustomId(`basic-channels-yes-${interaction.id}`)
-        .setLabel('Sim')
-        .setEmoji('📫')
-        .setStyle(ButtonStyle.Success);
+        const existingCategory = interaction.guild.channels.cache.find(c => c.name === 'Info' && c.type === ChannelType.GuildCategory);
 
-        const buttonNo = new ButtonBuilder()
-        .setCustomId(`basic-channels-no-${interaction.id}`)
-        .setLabel('Não')
-        .setEmoji('❌')
-        .setStyle(ButtonStyle.Success);
-
-        const basicChannelsRow = new ActionRowBuilder().addComponents(buttonYes, buttonNo);
-
-        if (channels.size && channels.size > 2) {
-            const buttonProceed = new ButtonBuilder()
-            .setCustomId(`proceed-button-${interaction.id}`)
-            .setLabel('Sim')
-            .setEmoji('👍')
-            .setStyle(ButtonStyle.Success);
-
-            const buttonForgetIt = new ButtonBuilder()
-            .setCustomId(`stop-button-${interaction.id}`)
-            .setLabel('Esquece!!! Não quero perder nada :(')
-            .setEmoji('🧨')
-            .setStyle(ButtonStyle.Danger);
-
-            const row1 = new ActionRowBuilder().addComponents(buttonProceed, buttonForgetIt);
-
-            const reply = await interaction.editReply({
-                content: `⚠️ **|** Parece que você já fez alguns canais neste servidor. Ao continuar com esta operação, você concorda que, _talvez_, alguns de seus canais existentes sejam deletados. Quer prosseguir?`,
-                components: [row1]
+        if (existingCategory) {
+            await interaction.editReply('❓ **|** A categoria "Info" já existe. Deseja recriar as regras e anúncios?');
+        } else {
+            const infoCategory = await interaction.guild.channels.create({
+                name: 'Info',
+                type: ChannelType.GuildCategory,
+                reason: 'Categoria de Informações criada pelo Freeless Bot'
             });
 
-            reply.createMessageComponentCollector({
-                componentType: ComponentType.Button,
-                filter: (i) => i.user.id === interaction.user.id && i.customId === `proceed-button-${interaction.id}` || i.customId === `stop-button-${interaction.id}`,
-                time: 60000
+            const rulesChannel = await interaction.guild.channels.create({
+                name: 'regras',
+                type: ChannelType.GuildText,
+                parent: infoCategory.id,
+                reason: 'Canal de Regras criado pelo Freeless Bot',
+                topic: 'Regras do servidor'
             });
 
-            collector.on('collect', async (collectedInteraction) => {
-                if (collectedInteraction.customId === `proceed-button-${interaction.id}`) {
-                    await interaction.editReply({
-                        content: `📝 **|** Você deseja criar canais básicos?`,
-                        components: [basicChannelsRow]
-                    });
-                } else {
-                    await interaction.editReply({ content: `🛑 **|** Operação cancelada.`, components: []});
-                }
+            const announcementsChannel = await interaction.guild.channels.create({
+                name: 'anúncios',
+                type: ChannelType.GuildText,
+                parent: infoCategory.id,
+                reason: 'Canal de Anúncios criado pelo Freeless Bot',
+                topic: 'Anúncios importantes do servidor'
             });
 
-            collector.on('end', async (collected, reason) => {
-                if (reason === 'time') {
-                    await interaction.editReply({ 
-                        content: '⏳ **|** Tempo esgotado! Nenhum botão foi selecionado.', 
-                        components: []
-                    });
-                }
-            });
+            await interaction.editReply(`✅ **|** Categoria "Info" criada com os canais ${rulesChannel} e ${announcementsChannel}!`);
         }
     }
 }
