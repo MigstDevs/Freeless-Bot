@@ -1,4 +1,4 @@
-import { RoleSelectMenuBuilder, ActionRowBuilder, ComponentType, PermissionsBitField } from 'discord.js';
+import { RoleSelectMenuBuilder, ActionRowBuilder, ComponentType, PermissionsBitField, ButtonBuilder, ButtonStyle } from 'discord.js';
 import fs from 'fs';
 import path from 'path';
 
@@ -110,8 +110,68 @@ async function comandoConfigurarExecutar(interaction, options) {
             }
         });
     } else if (!subcommandGroup && subcommand === "servidor") {
-        await interaction.deferReply({ ephemeral: true });
-        await interaction.editReply('Comando em desenvolvimento ;)');
+        const channels = interaction.guild.channels.cache;
+
+        const buttonYes = new ButtonBuilder()
+        .setCustomId(`basic-channels-yes-${interaction.id}`)
+        .setLabel('Sim')
+        .setEmoji('📫')
+        .setStyle(ButtonStyle.Success);
+
+        const buttonNo = new ButtonBuilder()
+        .setCustomId(`basic-channels-no-${interaction.id}`)
+        .setLabel('Não')
+        .setEmoji('❌')
+        .setStyle(ButtonStyle.Success);
+
+        const basicChannelsRow = new ActionRowBuilder().addComponents(buttonYes, buttonNo);
+
+        if (channels.size && channels.size > 2) {
+            const buttonProceed = new ButtonBuilder()
+            .setCustomId(`proceed-button-${interaction.id}`)
+            .setLabel('Sim')
+            .setEmoji('👍')
+            .setStyle(ButtonStyle.Success);
+
+            const buttonForgetIt = new ButtonBuilder()
+            .setCustomId(`stop-button-${interaction.id}`)
+            .setLabel('Esquece!!! Não quero perder nada :(')
+            .setEmoji('🧨')
+            .setStyle(ButtonStyle.Danger);
+
+            const row1 = new ActionRowBuilder().addComponents(buttonProceed, buttonForgetIt);
+
+            const reply = await interaction.editReply({
+                content: `⚠️ **|** Parece que você já fez alguns canais neste servidor. Ao continuar com esta operação, você concorda que, _talvez_, alguns de seus canais existentes sejam deletados. Quer prosseguir?`,
+                components: [row1]
+            });
+
+            reply.createMessageComponentCollector({
+                componentType: ComponentType.Button,
+                filter: (i) => i.user.id === interaction.user.id && i.customId === `proceed-button-${interaction.id}` || i.customId === `stop-button-${interaction.id}`,
+                time: 60000
+            });
+
+            collector.on('collect', async (collectedInteraction) => {
+                if (collectedInteraction.customId === `proceed-button-${interaction.id}`) {
+                    await interaction.editReply({
+                        content: `📝 **|** Você deseja criar canais básicos?`,
+                        components: [basicChannelsRow]
+                    });
+                } else {
+                    await interaction.editReply({ content: `🛑 **|** Operação cancelada.`, components: []});
+                }
+            });
+
+            collector.on('end', async (collected, reason) => {
+                if (reason === 'time') {
+                    await interaction.editReply({ 
+                        content: '⏳ **|** Tempo esgotado! Nenhum botão foi selecionado.', 
+                        components: []
+                    });
+                }
+            });
+        }
     }
 }
 
